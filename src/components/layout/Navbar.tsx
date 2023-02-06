@@ -1,15 +1,14 @@
 import styled from '@emotion/styled'
-import { Box, Typography } from '@material-ui/core'
-import { Link } from 'react-router-dom'
-import { useLayoutStyles } from '.'
-import paths from '../../constant/paths'
+import { Box } from '@material-ui/core'
 import { useCurrUser, useSignOut } from '../../services/auth/auth-query'
 import { numberWithCommas } from '../../utils/helper'
 import Space from '../commons/Space'
+import { Button, Typography } from 'antd'
+
 const Layout = styled.div`
   /* background-color: rgba(212, 123, 120, 1); */
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex: 1;
   flex-flow: row;
   width: calc(100% - 30px);
@@ -28,60 +27,31 @@ const Right = styled.div`
 const NavBar = () => {
   const { data: user } = useCurrUser()
   const { mutate: signOut } = useSignOut()
-  const classes = useLayoutStyles()
   return (
     <Layout>
-      <Typography
-        component="h1"
-        variant="h4"
-        color="inherit"
-        noWrap
-        className={classes.title}
+      <Typography.Text
+        style={{
+          fontSize: '24px',
+          fontWeight: 600,
+        }}
+        color="primary"
       >
         Tom Manager
-      </Typography>
+      </Typography.Text>
       <Right>
         <Space>
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >{`Hello: ${user?.name}`}</Typography>
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            {`Your Balance: ${numberWithCommas(user?.balance || 0)}`}
+          <Typography color="inherit">{`${user?.name}`}</Typography>
+          <Typography color="inherit">
+            {`( ${numberWithCommas(user?.balance || 0, 2)} )`}
           </Typography>
           <Box>
-            <Link
-              to={paths.signIn()}
-              style={{
-                textDecoration: 'none',
-              }}
+            <Button
               onClick={() => {
                 signOut()
               }}
             >
-              <Typography
-                className="sign-out"
-                component="h3"
-                variant="h5"
-                color="inherit"
-                noWrap
-                style={{
-                  color: 'WindowText',
-                  fontWeight: 'bold',
-                }}
-              >
-                Sign Out
-              </Typography>
-            </Link>
+              Sign Out
+            </Button>
           </Box>
         </Space>
       </Right>

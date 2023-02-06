@@ -18,7 +18,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import Breadcrumbs from './Breadcrumbs'
 
 const drawerWidth = 240
-export const useLayoutStyles = makeStyles(theme => ({
+export const useLayoutStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
   root: {
     display: 'flex',
@@ -135,6 +135,7 @@ const Layout = (props: PropsWithChildren<LayoutProps>) => {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
+        color="transparent"
         position="absolute"
         className={clsx(classes.appBar, open && classes.appBarShift)}
       >
