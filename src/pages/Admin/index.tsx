@@ -1,7 +1,6 @@
 import { Button } from '@material-ui/core'
 import { capitalize } from 'lodash'
 import { useCallback, useContext, useMemo } from 'react'
-import BasicList from '../../components/BasicList'
 import Page from '../../components/commons/Page'
 import Space from '../../components/commons/Space'
 import { UpdateUserCtx } from '../../constant/contexts'
@@ -58,11 +57,11 @@ const Admin = () => {
   const renderActions = useCallback(
     (data: UsersType[number]) => {
       const { id: userId, name, role: userRole } = data
-      const roles = [Role.USER, Role.MANAGER, Role.ADMIN]
+      const roles = [Role.VIEWER, Role.USER, Role.MANAGER, Role.ADMIN]
       return (
         <Space spacing={10}>
           <Space spacing={10}>
-            {roles.map(role => renderButtonAction(userId, userRole, role))}
+            {roles.map((role) => renderButtonAction(userId, userRole, role))}
           </Space>
           <Button
             variant="outlined"
@@ -90,7 +89,7 @@ const Admin = () => {
   const dataSource = useMemo(
     () =>
       usersPagination
-        ? usersPagination?.items.map(d => ({
+        ? usersPagination?.items.map((d) => ({
             ...d,
             balance: numberWithCommas(d.balance),
           }))
