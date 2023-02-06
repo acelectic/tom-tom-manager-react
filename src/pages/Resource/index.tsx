@@ -18,10 +18,8 @@ import { useMemo } from 'react'
 const Resource = () => {
   const { data: resources } = useGetResources()
   const { mutate: createResource } = useCreateResource()
-  const {
-    mutate: setActiveStatus,
-    isLoading: isSetActiveStatusLoading,
-  } = useUpdateResourceIsActive()
+  const { mutate: setActiveStatus, isLoading: isSetActiveStatusLoading } =
+    useUpdateResourceIsActive()
   const columns = useMemo(() => {
     const tmpColumns: ColumnType<ResourceEntity>[] = [
       {
@@ -46,7 +44,7 @@ const Resource = () => {
               checkedChildren="Active"
               unCheckedChildren="Inactive"
               loading={isSetActiveStatusLoading}
-              onChange={checked => {
+              onChange={(checked) => {
                 setActiveStatus({
                   resourceId,
                   isActive: checked,
@@ -65,11 +63,11 @@ const Resource = () => {
       <Row gutter={[30, 30]}>
         <Authorize roles={[Role.ADMIN, Role.MANAGER]}>
           <Col span={24}>
-            <AddButton
+            <AddButton<CreateResourceParams>
               fieldNames={['name', 'price']}
               name={'Add Resource'}
-              onSubmit={v => {
-                const { name, price } = v as CreateResourceParams
+              onSubmit={async (v) => {
+                const { name, price } = v
                 createResource({
                   name,
                   price,

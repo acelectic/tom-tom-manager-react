@@ -10,11 +10,11 @@ const Users = () => {
   return (
     <Page title={'User Management'}>
       <Authorize roles={[Role.ADMIN]}>
-        <AddButton
+        <AddButton<SignInParams>
           fieldNames={['name', 'email', 'password']}
           name={'Add User'}
-          onSubmit={v => {
-            const { email, password, name } = v as SignInParams
+          onSubmit={async (v) => {
+            const { email, password, name } = v
             createUser({
               email,
               password,
