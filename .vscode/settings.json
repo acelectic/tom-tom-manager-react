@@ -1,0 +1,4 @@
+{
+  "marquee.widgets.npm-stats.packageNames": ["tomtom-react"],
+  "i18n-ally.localesPaths": ["src/constant/i18n"]
+}
