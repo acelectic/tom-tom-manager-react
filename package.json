@@ -1,6 +1,6 @@
 {
   "name": "tomtom-react",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "1.x",
@@ -54,7 +54,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "fb:init": "firebase init hosting",
-    "fb:deploy": "yarn build && firebase deploy --only hosting"
+    "fb:deploy": "yarn build && firebase deploy --only hosting",
+    "semantic-release": "semantic-release"
   },
   "eslintConfig": {
     "extends": [
@@ -75,6 +76,12 @@
     ]
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.0.7",
+    "@semantic-release/release-notes-generator": "^10.0.3",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -89,7 +96,53 @@
     "@types/react-final-form-listeners": "^1.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/recharts": "^1.8.19",
+    "conventional-changelog-eslint": "^3.0.9",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-airbnb-typescript": "^12.3.1"
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "semantic-release": "^20.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acelectic/tom-tom-manager-react.git"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "eslint"
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "docs/CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "echo ${nextRelease.version} > VERSION"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "docs/CHANGELOG.md"
+          ]
+        }
+      ]
+    ]
   }
 }
