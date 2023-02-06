@@ -28,7 +28,9 @@ const App = () => {
                 },
               }}
             >
-              <Routes />
+              <Suspense fallback={<div>...</div>}>
+                <Routes />
+              </Suspense>
             </ConfigProvider>
           </Suspense>
         </Router>

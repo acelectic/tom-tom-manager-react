@@ -2,15 +2,19 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import Authorize from '../components/commons/Authorize'
 import Layout from '../components/layout'
 import paths from '../constant/paths'
-import Admin from '../pages/Admin'
-import Dashboard from '../pages/Dashboard'
-import Payment from '../pages/Payment'
-import Resource from '../pages/Resource'
-import Setting from '../pages/Setting'
-import Transaction from '../pages/Transaction'
-import TransactionDetail from '../pages/Transaction/TransactionDetail'
-import Users from '../pages/User'
-import UserDetial from '../pages/User/UserDetail'
+import loadable from '@loadable/component'
+
+const Admin = loadable(() => import('../pages/Admin'))
+const Dashboard = loadable(() => import('../pages/Dashboard'))
+const Payment = loadable(() => import('../pages/Payment'))
+const Resource = loadable(() => import('../pages/Resource'))
+const Setting = loadable(() => import('../pages/Setting'))
+const Transaction = loadable(() => import('../pages/Transaction'))
+const Users = loadable(() => import('../pages/User'))
+const TransactionDetail = loadable(
+  () => import('../pages/Transaction/TransactionDetail'),
+)
+const UserDetail = loadable(() => import('../pages/User/UserDetail'))
 
 export const ProtectedRoute = () => {
   return (
@@ -19,7 +23,7 @@ export const ProtectedRoute = () => {
         <Redirect exact from="/" to={paths.dashboard()} />
         <Route path={paths.dashboard()} component={Dashboard} />
 
-        <Route path={paths.userDetail()} component={UserDetial} />
+        <Route path={paths.userDetail()} component={UserDetail} />
         <Route path={paths.users()} component={Users} />
 
         <Route path={paths.resources()} component={Resource} />
@@ -37,3 +41,5 @@ export const ProtectedRoute = () => {
     </Layout>
   )
 }
+
+export default ProtectedRoute

@@ -1,10 +1,12 @@
 import { Redirect, Route, Switch } from 'react-router'
-import PageNotFound from '../pages/404'
 import { useApiHealth, useCurrUser } from '../services/auth/auth-query'
 import { useMemo } from 'react'
-import { ProtectedRoute } from './protected'
 import paths from '../constant/paths'
-import SignIn from '../pages/Auth'
+import loadable from '@loadable/component'
+
+const PageNotFound = loadable(() => import('../pages/404'))
+const SignIn = loadable(() => import('../pages/Auth'))
+const ProtectedRoute = loadable(() => import('./protected'))
 
 export const Routes = () => {
   useApiHealth()
