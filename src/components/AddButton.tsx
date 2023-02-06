@@ -7,7 +7,7 @@ const Layout = styled.div`
   margin: 20px 0;
 `
 
-interface AddButtonProps<T, K extends keyof T>
+interface AddButtonProps<T extends AnyObject, K extends keyof T>
   extends Omit<ModalCreateProps<T, K>, 'visible' | 'closeModal'> {
   name: string
 }
@@ -16,6 +16,7 @@ const AddButton = <T extends AnyObject, K extends keyof T = keyof T>(
 ) => {
   const { name, fieldNames, onSubmit } = props
   const [visible, setVisible] = useState(false)
+
   const openModal = useCallback(() => {
     setVisible(true)
   }, [])
@@ -25,10 +26,16 @@ const AddButton = <T extends AnyObject, K extends keyof T = keyof T>(
   }, [])
 
   const onModalSubmit = useCallback(
-    (values: T) => {
-      onSubmit(values)
+    async (values: T) => {
+      try {
+        await onSubmit(values)
+      } catch (error) {
+        return Promise.reject(error)
+      } finally {
+        closeModal()
+      }
     },
-    [onSubmit],
+    [closeModal, onSubmit],
   )
   return (
     <Layout>

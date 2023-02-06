@@ -108,7 +108,7 @@ const ModalCreateFrom = <T extends AnyObject, K extends keyof T = keyof T>(
 export interface ModalCreateProps<T extends AnyObject, K extends keyof T> {
   visible: boolean
   fieldNames: K[]
-  onSubmit: (values: T) => void
+  onSubmit: (values: T) => Promise<void>
   closeModal: () => void
   className?: string
 }

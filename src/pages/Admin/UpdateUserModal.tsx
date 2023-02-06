@@ -56,6 +56,7 @@ const UpdateUserForm = (props: IUpdateUserFormProps) => {
 
   const roleOptions = useMemo(() => {
     const options: BaseOptions[] = [
+      { value: Role.VIEWER, label: capitalize(Role.VIEWER) },
       { value: Role.USER, label: capitalize(Role.USER) },
       { value: Role.MANAGER, label: capitalize(Role.MANAGER) },
       { value: Role.ADMIN, label: capitalize(Role.ADMIN) },
