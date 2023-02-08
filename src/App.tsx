@@ -8,10 +8,13 @@ import { I18nextProvider } from 'react-i18next'
 import { Suspense } from 'react'
 import i18next from './constant/i18n'
 import './initialize'
-import { withCtx } from './utils/helper'
+import { appVersion, withCtx } from './utils/helper'
 import { AppCtx } from './constant/contexts'
 import { AppSnackbar } from './components/AppSnackbar'
 import { ConfigProvider } from 'antd'
+
+console.info(`APP VERSION: ${appVersion}`)
+
 const queryClient = new QueryClient()
 
 const App = () => {

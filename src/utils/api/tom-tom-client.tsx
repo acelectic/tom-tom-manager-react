@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import humps from 'humps'
 import { getToken } from '../../services/auth/auth-action'
 import { customRequestData, deepLoop } from './tools'
-import { sleep } from '../helper'
+import { appVersion, sleep } from '../helper'
 import { appConfig } from '../../config'
 
 const createClient = () => {
@@ -16,6 +16,7 @@ const createClient = () => {
     request.url = `${host}/${request.url}`
     const token = getToken()
     request.headers.common['Authorization'] = `Bearer ${token}`
+    request.headers.common['App-Version'] = appVersion
 
     if (request.params) {
       request.params = deepLoop(request.params, modifyRequestData)

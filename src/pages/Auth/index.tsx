@@ -2,14 +2,21 @@ import { useSignIn } from '../../services/auth/auth-query'
 import { SignInParams } from '../../services/auth/auth-types'
 import styled from '@emotion/styled'
 import { appConfig } from '../../config'
-import { Button, Col, Form, Input } from 'antd'
+import { Button, Col, Form, Input, Typography } from 'antd'
+import { appVersion } from '../../utils/helper'
 
 const Layout = styled.div`
+  position: relative;
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+`
+const AppVersionLayout = styled.div`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 `
 
 const SignIn = () => {
@@ -63,6 +70,9 @@ const SignIn = () => {
           </Button>
         </Col>
       </Form>
+      <AppVersionLayout>
+        <Typography.Text>{`v${appVersion}`}</Typography.Text>
+      </AppVersionLayout>
     </Layout>
   )
 }

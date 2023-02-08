@@ -16,6 +16,10 @@ import {
   useRouteMatch,
 } from 'react-router-dom'
 
+import pjJson from '../../package.json'
+
+export const appVersion = pjJson.version
+
 export const createCtx = <T extends object>(initValue: T) => {
   return createContext<
     [T, (value: DeepPartial<T>) => void, { reset: () => void; initialValue: T }]

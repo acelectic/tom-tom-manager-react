@@ -16,6 +16,9 @@ import clsx from 'clsx'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import Breadcrumbs from './Breadcrumbs'
+import { Typography } from 'antd'
+import styled from '@emotion/styled'
+import { appVersion } from '../../utils/helper'
 
 const drawerWidth = 240
 export const useLayoutStyles = makeStyles((theme) => ({
@@ -117,6 +120,21 @@ export const useLayoutStyles = makeStyles((theme) => ({
   },
 }))
 
+const SideMenuLayout = styled(List)`
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  height: 100%;
+`
+
+const AppVersionLayout = styled.div`
+  margin-top: auto;
+  padding: 30px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 interface LayoutProps {}
 const Layout = (props: PropsWithChildren<LayoutProps>) => {
   const { children } = props
@@ -168,9 +186,12 @@ const Layout = (props: PropsWithChildren<LayoutProps>) => {
           </IconButton>
         </div>
         <Divider />
-        <List>
+        <SideMenuLayout>
           <SideMenu />
-        </List>
+          <AppVersionLayout>
+            <Typography.Text>{`v${appVersion}`}</Typography.Text>
+          </AppVersionLayout>
+        </SideMenuLayout>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
