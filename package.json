@@ -20,8 +20,11 @@
     "chart.js": "^3.2.1",
     "class-validator": "^0.13.1",
     "clsx": "^1.1.1",
+    "cross-env": "^7.0.3",
     "dayjs": "^1.10.4",
     "deepmerge": "^4.2.2",
+    "dotenv": "^16.0.3",
+    "env-cmd": "^10.1.0",
     "final-form": "^4.20.2",
     "final-form-arrays": "^3.0.2",
     "humps": "^2.0.1",
@@ -55,7 +58,7 @@
     "eject": "react-scripts eject",
     "fb:init": "firebase init hosting",
     "fb:deploy": "yarn build && firebase deploy --only hosting",
-    "semantic-release": "semantic-release"
+    "semantic-release": "env-cmd -f .env semantic-release --no-ci"
   },
   "eslintConfig": {
     "extends": [
@@ -132,17 +135,32 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "echo ${nextRelease.version} > VERSION"
+          "prepareCmd": "set-version ${nextRelease.version} && echo ${nextRelease.version} > VERSION",
+          "publishCmd": "publish-package"
         }
       ],
       [
         "@semantic-release/git",
         {
           "assets": [
-            "docs/CHANGELOG.md"
+            "docs/CHANGELOG.md",
+            "docs",
+            "package.json"
           ]
         }
       ]
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      {
+        "path": "@semantic-release/git",
+        "assets": [
+          "docs/CHANGELOG.md",
+          "docs",
+          "package.json"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
     ]
   }
 }
