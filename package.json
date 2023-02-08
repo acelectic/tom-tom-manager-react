@@ -1,6 +1,6 @@
 {
   "name": "tomtom-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "1.x",
@@ -135,7 +135,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "set-version ${nextRelease.version} && echo ${nextRelease.version} > VERSION"
+          "prepareCmd": "echo ${nextRelease.version} > VERSION"
         }
       ],
       [
