@@ -135,7 +135,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "echo ${nextRelease.version} > VERSION"
+          "generateNotesCmd": "echo ${nextRelease.version} > VERSION"
         }
       ],
       [

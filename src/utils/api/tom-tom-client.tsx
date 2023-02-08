@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import dayjs from 'dayjs'
 import humps from 'humps'
-import { getToken } from '../../services/auth/auth-action'
 import { customRequestData, deepLoop } from './tools'
 import { appVersion, sleep } from '../helper'
 import { appConfig } from '../../config'
@@ -14,8 +13,6 @@ const createClient = () => {
     const host = appConfig.REACT_APP_API_HOST
 
     request.url = `${host}/${request.url}`
-    const token = getToken()
-    request.headers.common['Authorization'] = `Bearer ${token}`
     request.headers.common['App-Version'] = appVersion
 
     if (request.params) {
@@ -23,7 +20,6 @@ const createClient = () => {
     }
     if (request.data) {
       request.data = deepLoop(request.data, modifyRequestData)
-      // request.data = humps.decamelizeKeys(request.data)
       customRequestData(request)
     }
     return request
