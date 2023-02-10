@@ -2,7 +2,13 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { api } from '../../utils/api'
 import { useSnackbar } from '../../utils/custom-hook'
 import { USER_URL } from '../user/user-query'
-import { getToken, removeToken, setToken } from './auth-action'
+import {
+  getAccessToken,
+  removeAccessToken,
+  setRefreshToken,
+  setAccessToken,
+  removeRefreshToken,
+} from './auth-action'
 import {
   IRefreshTokenResponse,
   ISignInParams,
@@ -45,30 +51,15 @@ export const useCurrUser = () => {
     {
       staleTime: 10 * 60 * 1000,
       cacheTime: 10 * 60 * 1000,
-      enabled: !!getToken(),
+      enabled: !!getAccessToken(),
       onError: () => {
-        removeToken()
+        removeAccessToken()
+        removeRefreshToken()
       },
       retry: 0,
     },
   )
 }
-
-// export const useUser = (params: GetUserParams) => {
-//   const { userId, relations: dupRelations = [] } = params
-//   const relations = uniq(dupRelations)
-//   return useQuery<CurrentUser | undefined>(
-//     [USERS, { userId, relations }],
-//     async () => {
-//       const response = await api.blcpIdp.get<CurrentUser>(`${USERS}/${userId}`, { relations })
-//       return response.data
-//     },
-//     {
-//       retry: 0,
-//       enabled: !!userId,
-//     },
-//   )
-// }
 
 export const useSignIn = () => {
   const queryClient = useQueryClient()
@@ -82,8 +73,9 @@ export const useSignIn = () => {
     },
     {
       onSuccess: (data) => {
-        const { accessToken, user } = data
-        setToken(accessToken)
+        const { accessToken, refreshToken, user } = data
+        setAccessToken(accessToken)
+        setRefreshToken(refreshToken)
         queryClient.setQueryData([USER_URL, CURRENT_USER], user)
       },
     },
@@ -115,7 +107,8 @@ export const useSignOut = () => {
     },
     {
       onSuccess: () => {
-        removeToken()
+        removeAccessToken()
+        removeRefreshToken()
         queryClient.resetQueries([USER_URL, CURRENT_USER])
         queryClient.removeQueries()
       },
@@ -127,6 +120,9 @@ export const apiRefreshToken = async () => {
   const { data } = await api.tomtom.post<IRefreshTokenResponse>(
     REFRESH_TOKEN_URL,
   )
+  const { accessToken, refreshToken } = data
+  setAccessToken(accessToken)
+  setRefreshToken(refreshToken)
   return data
 }
 

@@ -14,6 +14,7 @@ import {
   SIGN_IN_URL,
   apiRefreshToken,
 } from '../../services/auth/auth-query'
+import { getRefreshToken } from '../../services/auth/auth-action'
 
 interface IAxiosRequestConfig extends AxiosRequestConfig {
   _retry: boolean
@@ -48,13 +49,17 @@ const responseInterceptor = (response: AxiosResponse<any>) => {
 const errorInterceptor =
   (axRefreshToken: AxiosInstance) => async (error: AxiosError) => {
     const originalConfig = error.config as IAxiosRequestConfig
-
+    const refreshToken = getRefreshToken()
     if (
       ![SIGN_IN_URL, REFRESH_TOKEN_URL].includes(originalConfig.url || '') &&
       error.response
     ) {
       // Access Token was expired
-      if (error.response.status === 401 && !originalConfig._retry) {
+      if (
+        error.response.status === 401 &&
+        !originalConfig._retry &&
+        !!refreshToken
+      ) {
         originalConfig._retry = true
         try {
           await apiRefreshToken()
