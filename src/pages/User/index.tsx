@@ -1,6 +1,6 @@
 import { useCreateUser } from '../../services/user/user-query'
 import Page from '../../components/commons/Page'
-import { Role, SignInParams } from '../../services/auth/auth-types'
+import { EnumRole, ISignInParams } from '../../services/auth/auth-types'
 import Authorize from '../../components/commons/Authorize'
 import AddButton from '../../components/AddButton'
 import TableUsers from '../../components/TableUsers'
@@ -9,8 +9,8 @@ const Users = () => {
   const { mutate: createUser } = useCreateUser()
   return (
     <Page title={'User Management'}>
-      <Authorize roles={[Role.ADMIN]}>
-        <AddButton<SignInParams>
+      <Authorize roles={[EnumRole.ADMIN]}>
+        <AddButton<ISignInParams>
           fieldNames={['name', 'email', 'password']}
           name={'Add User'}
           onSubmit={async (v) => {

@@ -3,12 +3,18 @@ import { api } from '../../utils/api'
 import { useSnackbar } from '../../utils/custom-hook'
 import { USER_URL } from '../user/user-query'
 import { getToken, removeToken, setToken } from './auth-action'
-import { SignInParams, SignInResponse, UserEntity } from './auth-types'
+import {
+  IRefreshTokenResponse,
+  ISignInParams,
+  ISignInResponse,
+  IUserEntity,
+} from './auth-types'
 
 export const HEALTH_URL = 'health'
-export const AUTH = 'auth'
-export const SIGN_IN = `${AUTH}/register`
-export const SIGN_OUT = `${AUTH}/sign-out`
+export const AUTH_URL = 'auth'
+export const SIGN_IN_URL = `${AUTH_URL}/register`
+export const SIGN_OUT_URL = `${AUTH_URL}/sign-out`
+export const REFRESH_TOKEN_URL = `${AUTH_URL}/refresh-token`
 
 export const CURRENT_USER = `${USER_URL}/current-user`
 
@@ -33,7 +39,7 @@ export const useCurrUser = () => {
   return useQuery(
     [USER_URL, CURRENT_USER],
     async () => {
-      const response = await api.tomtom.get<UserEntity>(CURRENT_USER)
+      const response = await api.tomtom.get<IUserEntity>(CURRENT_USER)
       return response.data
     },
     {
@@ -67,12 +73,15 @@ export const useCurrUser = () => {
 export const useSignIn = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    async (params: SignInParams) => {
-      const { data } = await api.tomtom.post<SignInResponse>(SIGN_IN, params)
+    async (params: ISignInParams) => {
+      const { data } = await api.tomtom.post<ISignInResponse>(
+        SIGN_IN_URL,
+        params,
+      )
       return data
     },
     {
-      onSuccess: data => {
+      onSuccess: (data) => {
         const { accessToken, user } = data
         setToken(accessToken)
         queryClient.setQueryData([USER_URL, CURRENT_USER], user)
@@ -102,7 +111,7 @@ export const useSignOut = () => {
   const queryClient = useQueryClient()
   return useMutation(
     async () => {
-      return api.tomtom.post(SIGN_OUT)
+      return api.tomtom.post(SIGN_OUT_URL)
     },
     {
       onSuccess: () => {
@@ -112,4 +121,15 @@ export const useSignOut = () => {
       },
     },
   )
+}
+
+export const apiRefreshToken = async () => {
+  const { data } = await api.tomtom.post<IRefreshTokenResponse>(
+    REFRESH_TOKEN_URL,
+  )
+  return data
+}
+
+export const useRefreshToken = () => {
+  return useMutation(apiRefreshToken)
 }

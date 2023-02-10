@@ -1,4 +1,4 @@
-import { UserEntity } from '../auth/auth-types'
+import { IUserEntity } from '../auth/auth-types'
 import { ResourceEntity } from '../resource/resource-types'
 
 interface ITransactionMeta {
@@ -11,7 +11,7 @@ export interface TransactionEntity {
   detail: string
   price: number
   remain: number
-  users?: UserEntity[]
+  users?: IUserEntity[]
   resources?: ResourceEntity[]
   createdAt: string
   completed: boolean

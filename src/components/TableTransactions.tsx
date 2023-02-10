@@ -2,7 +2,7 @@ import { Button } from '@material-ui/core'
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import paths from '../constant/paths'
-import { Role } from '../services/auth/auth-types'
+import { EnumRole } from '../services/auth/auth-types'
 import {
   useGetTransactions,
   modifyTransaction,
@@ -38,7 +38,7 @@ const TableTransactions = (props: TableTransactionsProps) => {
 
   const renderActions = useCallback((data: typeof dataSource[number]) => {
     return (
-      <Authorize roles={[Role.ADMIN, Role.MANAGER]} allowLocalAdmin>
+      <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
         <Link
           to={paths.transactionDetail({
             routeParam: {
@@ -83,7 +83,7 @@ const TableTransactions = (props: TableTransactionsProps) => {
       },
       {
         dataIndex: 'completed',
-        render: value => {
+        render: (value) => {
           return (
             <Tag color={value === 'Completed' ? 'success' : 'processing'}>
               {value}

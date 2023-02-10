@@ -1,10 +1,10 @@
 import { PropsWithChildren, useMemo } from 'react'
 import { useCurrUser } from '../../services/auth/auth-query'
-import { Role } from '../../services/auth/auth-types'
+import { EnumRole } from '../../services/auth/auth-types'
 import { appConfig } from '../../config'
 
 interface IAuthorizeProps {
-  roles?: Role[]
+  roles?: EnumRole[]
   allowLocalAdmin?: boolean
 }
 const Authorize = (props: PropsWithChildren<IAuthorizeProps>) => {

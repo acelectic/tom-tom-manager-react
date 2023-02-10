@@ -1,5 +1,5 @@
 import { useSignIn } from '../../services/auth/auth-query'
-import { SignInParams } from '../../services/auth/auth-types'
+import { ISignInParams } from '../../services/auth/auth-types'
 import styled from '@emotion/styled'
 import { appConfig } from '../../config'
 import { Button, Col, Form, Input, Typography } from 'antd'
@@ -23,7 +23,7 @@ const SignIn = () => {
   const { mutateAsync: signIn } = useSignIn()
   return (
     <Layout>
-      <Form<SignInParams>
+      <Form<ISignInParams>
         initialValues={
           appConfig.REACT_APP_NODE_ENV === 'development'
             ? {

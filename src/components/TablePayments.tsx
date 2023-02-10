@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core'
 import dayjs from 'dayjs'
 import { useCallback, useMemo } from 'react'
-import { Role } from '../services/auth/auth-types'
+import { EnumRole } from '../services/auth/auth-types'
 import {
   useConfirmPayment,
   useGetPayments,
@@ -40,7 +40,7 @@ const TablePayments = (props: TablePaymentsProps) => {
 
   const dataSource = useMemo(() => {
     return paymentsPaginate
-      ? paymentsPaginate?.items.map(payment => {
+      ? paymentsPaginate?.items.map((payment) => {
           const { resource, createdAt, ...restPayment } = payment
           return {
             resource: resource
@@ -61,7 +61,7 @@ const TablePayments = (props: TablePaymentsProps) => {
     (data: PaymentType[number]) => {
       const { id: paymentId, status, user, price } = data
       return (
-        <Authorize roles={[Role.ADMIN, Role.MANAGER]} allowLocalAdmin>
+        <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
           <Button
             variant="outlined"
             color={'primary'}
@@ -171,7 +171,7 @@ const TablePayments = (props: TablePaymentsProps) => {
       },
       {
         dataIndex: 'status',
-        render: value => {
+        render: (value) => {
           return (
             <Tag
               color={

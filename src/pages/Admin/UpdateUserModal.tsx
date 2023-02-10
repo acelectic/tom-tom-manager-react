@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { UpdateUserCtx } from '../../constant/contexts'
 import { useUpdateUser } from '../../services/user/user-query'
-import { Role } from '../../services/auth/auth-types'
+import { EnumRole } from '../../services/auth/auth-types'
 import { UpdateUserParams } from '../../services/user/user-types'
 import { capitalize } from 'lodash'
 import { Form, Input, Modal, Select } from 'antd'
@@ -56,10 +56,10 @@ const UpdateUserForm = (props: IUpdateUserFormProps) => {
 
   const roleOptions = useMemo(() => {
     const options: BaseOptions[] = [
-      { value: Role.VIEWER, label: capitalize(Role.VIEWER) },
-      { value: Role.USER, label: capitalize(Role.USER) },
-      { value: Role.MANAGER, label: capitalize(Role.MANAGER) },
-      { value: Role.ADMIN, label: capitalize(Role.ADMIN) },
+      { value: EnumRole.VIEWER, label: capitalize(EnumRole.VIEWER) },
+      { value: EnumRole.USER, label: capitalize(EnumRole.USER) },
+      { value: EnumRole.MANAGER, label: capitalize(EnumRole.MANAGER) },
+      { value: EnumRole.ADMIN, label: capitalize(EnumRole.ADMIN) },
     ]
     return options
   }, [])

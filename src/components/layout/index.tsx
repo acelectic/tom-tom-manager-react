@@ -105,8 +105,8 @@ export const useLayoutStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
-    paddingLeft: theme.spacing(0),
-    paddingRight: theme.spacing(0),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
     backgroundColor: 'unset',
   },
   paper: {

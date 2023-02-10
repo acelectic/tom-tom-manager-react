@@ -9,7 +9,7 @@ import { usePageRunner, useSnackbar } from '../utils/custom-hook'
 import { useConfirmUserAllPayments } from '../services/payment/payment-query'
 import Authorize from './commons/Authorize'
 import { sumBy } from 'lodash'
-import { Role } from '../services/auth/auth-types'
+import { EnumRole } from '../services/auth/auth-types'
 import { Col, Modal, Table, Typography } from 'antd'
 import { ColumnType } from 'antd/es/table'
 import { PaymentStatus } from '../services/payment/payment-types'
@@ -35,7 +35,7 @@ const TableUsers = (props: TableUsersProps) => {
   const dataSource = useMemo(
     () =>
       usersPagination
-        ? usersPagination?.items.map(d => ({
+        ? usersPagination?.items.map((d) => ({
             ...d,
             balance: numberWithCommas(d.balance),
           }))
@@ -77,7 +77,7 @@ const TableUsers = (props: TableUsersProps) => {
             status === PaymentStatus.PENDING ? price : 0,
           )
           return (
-            <Authorize roles={[Role.ADMIN]} allowLocalAdmin>
+            <Authorize roles={[EnumRole.ADMIN]} allowLocalAdmin>
               <Button
                 variant="outlined"
                 color={'secondary'}

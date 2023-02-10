@@ -2,7 +2,7 @@ import { Col, Row, Switch, Table } from 'antd'
 import AddButton from '../../components/AddButton'
 import Authorize from '../../components/commons/Authorize'
 import Page from '../../components/commons/Page'
-import { Role } from '../../services/auth/auth-types'
+import { EnumRole } from '../../services/auth/auth-types'
 import {
   useCreateResource,
   useGetResources,
@@ -61,7 +61,7 @@ const Resource = () => {
   return (
     <Page title="Resource">
       <Row gutter={[30, 30]}>
-        <Authorize roles={[Role.ADMIN, Role.MANAGER]}>
+        <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]}>
           <Col span={24}>
             <AddButton<CreateResourceParams>
               fieldNames={['name', 'price']}

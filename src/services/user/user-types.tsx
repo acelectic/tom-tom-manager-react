@@ -1,19 +1,19 @@
-import { Role, UserEntity } from '../auth/auth-types'
+import { EnumRole, IUserEntity } from '../auth/auth-types'
 
 export interface GetUsersParams extends PaginationParams {
   transactionId?: string
 }
-export interface GetUsersResponse extends Pagination<UserEntity> {}
+export interface GetUsersResponse extends Pagination<IUserEntity> {}
 
-export interface GetUserResponse extends UserEntity {}
+export interface GetUserResponse extends IUserEntity {}
 export interface ChangeRoleParams {
   userId: string
-  role: Role
+  role: EnumRole
 }
 
 export interface UpdateUserParams {
   userId: string
   name: string
-  role: Role
+  role: EnumRole
   password: string
 }

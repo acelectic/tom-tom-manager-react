@@ -12,14 +12,14 @@
 import { PaymentEntity } from '../payment/payment-types'
 
 // }
-export enum Role {
+export enum EnumRole {
   ADMIN = 'admin',
   MANAGER = 'manager',
   USER = 'user',
   VIEWER = 'viewer',
 }
 
-export interface UserEntity {
+export interface IUserEntity {
   id: string
   createdAt: string
   updatedAt: string
@@ -27,17 +27,23 @@ export interface UserEntity {
   email: string
   lastSignInAt: string
   name: string
-  role: Role
+  role: EnumRole
   balance: number
   payments?: PaymentEntity[]
 }
-export type SignInParams = {
+export type ISignInParams = {
   email: string
   password: string
   name?: string
 }
 
-export type SignInResponse = {
+export type ISignInResponse = {
   accessToken: string
-  user: UserEntity
+  refreshToken: string
+  user: IUserEntity
+}
+
+export type IRefreshTokenResponse = {
+  accessToken: string
+  refreshToken: string
 }

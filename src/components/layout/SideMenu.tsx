@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useCurrUser } from '../../services/auth/auth-query'
 import { useMemo } from 'react'
 import Authorize from '../commons/Authorize'
-import { Role } from '../../services/auth/auth-types'
+import { EnumRole } from '../../services/auth/auth-types'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import PeopleIcon from '@material-ui/icons/People'
@@ -25,10 +25,10 @@ const Menu = (props: MenuProps) => {
 
   const { pathname } = history.location
 
-  const isFocus = useMemo(() => pathname.startsWith(props.path), [
-    pathname,
-    props.path,
-  ])
+  const isFocus = useMemo(
+    () => pathname.startsWith(props.path),
+    [pathname, props.path],
+  )
   return (
     <Box
       style={{
@@ -87,7 +87,7 @@ const SideMenu = () => {
         label={t('page.resources')}
         icon={<AssignmentIcon />}
       />
-      <Authorize roles={[Role.ADMIN, Role.MANAGER]} allowLocalAdmin>
+      <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
         <Menu
           path={paths.setting()}
           label={t('page.setting')}

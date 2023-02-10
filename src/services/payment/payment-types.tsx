@@ -1,4 +1,4 @@
-import { UserEntity } from '../auth/auth-types'
+import { IUserEntity } from '../auth/auth-types'
 import { ResourceEntity } from '../resource/resource-types'
 import { TransactionEntity } from '../transaction/transaction-types'
 
@@ -21,7 +21,7 @@ export interface PaymentEntity {
   ref: number
   price: number
   type: PaymentType
-  user: UserEntity
+  user: IUserEntity
   resource: ResourceEntity
   transaction: TransactionEntity
   createdAt: string

@@ -1,6 +1,6 @@
 import { AppSnackbarProps } from '../components/AppSnackbar'
 import { ITemplateFormValues } from '../pages/Setting/TemplateFormModal'
-import { Role } from '../services/auth/auth-types'
+import { EnumRole } from '../services/auth/auth-types'
 import { createCtx } from '../utils/helper'
 
 const AppSnackbarOption: AppSnackbarProps = {
@@ -16,7 +16,7 @@ export const UpdateUserCtx = createCtx({
   userId: '',
   name: '',
   password: '',
-  role: '' as Role,
+  role: '' as EnumRole,
 })
 
 export const ChangePasswordCtx = createCtx({

@@ -7,12 +7,12 @@ import {
   useRef,
 } from 'react'
 import { ChangePasswordCtx, UpdateUserCtx } from '../../constant/contexts'
-import { UserEntity } from '../../services/auth/auth-types'
+import { IUserEntity } from '../../services/auth/auth-types'
 import { Form, Input, Modal } from 'antd'
 import { IAdminChangePasswordParams } from '../../services/admin/auth-types'
 import { useChangePassword } from '../../services/admin/auth-query'
 
-type IUserInfo = Pick<UserEntity, 'id' | 'name' | 'email'>
+type IUserInfo = Pick<IUserEntity, 'id' | 'name' | 'email'>
 type IChangePasswordModalFormValues = IAdminChangePasswordParams &
   IUserInfo & {
     confirmPassword: string

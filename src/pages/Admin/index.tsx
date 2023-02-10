@@ -4,7 +4,7 @@ import { useCallback, useContext, useMemo } from 'react'
 import Page from '../../components/commons/Page'
 import Space from '../../components/commons/Space'
 import { ChangePasswordCtx, UpdateUserCtx } from '../../constant/contexts'
-import { Role } from '../../services/auth/auth-types'
+import { EnumRole } from '../../services/auth/auth-types'
 import { useChangeRole, useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas, withCtx } from '../../utils/helper'
 import UpdateUserModal from './UpdateUserModal'
@@ -35,7 +35,7 @@ const Admin = () => {
   const { mutate: resetPassword } = useResetPassword()
 
   const renderButtonAction = useCallback(
-    (userId: string, userRole: Role, role: Role) => {
+    (userId: string, userRole: EnumRole, role: EnumRole) => {
       return (
         <Button
           key={`${userId}-${userRole}-${role}`}
@@ -62,7 +62,12 @@ const Admin = () => {
   const renderActions = useCallback(
     (data: UsersType[number]) => {
       const { id: userId, name, email, role: userRole } = data
-      const roles = [Role.VIEWER, Role.USER, Role.MANAGER, Role.ADMIN]
+      const roles = [
+        EnumRole.VIEWER,
+        EnumRole.USER,
+        EnumRole.MANAGER,
+        EnumRole.ADMIN,
+      ]
       return (
         <Space spacing={10}>
           <Space spacing={10}>
@@ -97,7 +102,7 @@ const Admin = () => {
           >
             Reset Password
           </Button>
-          <Authorize roles={[Role.ADMIN]} allowLocalAdmin>
+          <Authorize roles={[EnumRole.ADMIN]} allowLocalAdmin>
             <Button
               variant="outlined"
               color={'primary'}
