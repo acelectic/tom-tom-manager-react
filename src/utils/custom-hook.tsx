@@ -1,4 +1,4 @@
-import { useContext, useCallback, useMemo } from 'react'
+import { useContext, useCallback, useMemo, useState } from 'react'
 import { AppSnackbarProps } from '../components/AppSnackbar'
 import { AppCtx } from '../constant/contexts'
 import { useQueryParams } from './helper'
@@ -60,7 +60,7 @@ export const usePageRunner = (params?: UsePageRunnerParams) => {
   }, [initialPage, initialPageSize, pageParamName, perPageParamName, query])
 
   const setPage = useCallback(
-    newPage => {
+    (newPage) => {
       if (newPage !== page) {
         setParam({
           [perPageParamName]: perPage,
@@ -71,7 +71,7 @@ export const usePageRunner = (params?: UsePageRunnerParams) => {
     [page, pageParamName, perPage, perPageParamName, setParam],
   )
   const setPerPage = useCallback(
-    newPerPage => {
+    (newPerPage) => {
       if (newPerPage !== perPage) {
         setParam({
           [perPageParamName]: newPerPage,
@@ -100,4 +100,18 @@ export const usePageRunner = (params?: UsePageRunnerParams) => {
     pageSize: Number(perPage),
     changePageSize,
   }
+}
+
+export const useVisible = () => {
+  const [visible, setVisible] = useState(false)
+
+  const open = useCallback(() => {
+    setVisible(true)
+  }, [])
+
+  const close = useCallback(() => {
+    setVisible(false)
+  }, [])
+
+  return { visible, open, close }
 }

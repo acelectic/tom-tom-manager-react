@@ -52,8 +52,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd react-scripts start",
+    "build": "env-cmd -f .env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "fb:init": "firebase init hosting",
@@ -142,9 +142,9 @@
         "@semantic-release/git",
         {
           "assets": [
-            "dist/**/*.{js,css}",
             "docs",
-            "package.json"
+            "package.json",
+            "yarn.lock"
           ],
           "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
         }

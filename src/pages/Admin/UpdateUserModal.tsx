@@ -87,7 +87,16 @@ const UpdateUserForm = (props: IUpdateUserFormProps) => {
       }}
       layout="vertical"
     >
-      <Form.Item name="name" label="Name">
+      <Form.Item
+        name="name"
+        label="Name"
+        rules={[
+          {
+            type: 'string',
+            required: true,
+          },
+        ]}
+      >
         <Input />
       </Form.Item>
       <Form.Item name="role" label="Role">

@@ -3,7 +3,7 @@ import { capitalize } from 'lodash'
 import { useCallback, useContext, useMemo } from 'react'
 import Page from '../../components/commons/Page'
 import Space from '../../components/commons/Space'
-import { UpdateUserCtx } from '../../constant/contexts'
+import { ChangePasswordCtx, UpdateUserCtx } from '../../constant/contexts'
 import { Role } from '../../services/auth/auth-types'
 import { useChangeRole, useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas, withCtx } from '../../utils/helper'
@@ -13,10 +13,14 @@ import { usePageRunner } from '../../utils/custom-hook'
 import { ColumnType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 import paths from '../../constant/paths'
+import { useResetPassword } from '../../services/admin/auth-query'
+import Authorize from '../../components/commons/Authorize'
+import ChangePasswordModal from './ChangePasswordModal'
 
 const Admin = () => {
   const { mutate: changeRole } = useChangeRole()
-  const [, setState] = useContext(UpdateUserCtx)
+  const [, setUpdateUserState] = useContext(UpdateUserCtx)
+  const [, setChangePasswordState] = useContext(ChangePasswordCtx)
 
   const { page, pageSize, setNewPage, changePageSize } = usePageRunner({
     alias: {
@@ -28,6 +32,7 @@ const Admin = () => {
     page,
     limit: pageSize,
   })
+  const { mutate: resetPassword } = useResetPassword()
 
   const renderButtonAction = useCallback(
     (userId: string, userRole: Role, role: Role) => {
@@ -56,7 +61,7 @@ const Admin = () => {
 
   const renderActions = useCallback(
     (data: UsersType[number]) => {
-      const { id: userId, name, role: userRole } = data
+      const { id: userId, name, email, role: userRole } = data
       const roles = [Role.VIEWER, Role.USER, Role.MANAGER, Role.ADMIN]
       return (
         <Space spacing={10}>
@@ -69,7 +74,7 @@ const Admin = () => {
             style={{ fontWeight: 'bold' }}
             size="small"
             onClick={() => {
-              setState({
+              setUpdateUserState({
                 visible: true,
                 userId,
                 name,
@@ -79,10 +84,46 @@ const Admin = () => {
           >
             Edit
           </Button>
+          <Button
+            variant="outlined"
+            color={'primary'}
+            style={{ fontWeight: 'bold' }}
+            size="small"
+            onClick={() => {
+              resetPassword({
+                email,
+              })
+            }}
+          >
+            Reset Password
+          </Button>
+          <Authorize roles={[Role.ADMIN]} allowLocalAdmin>
+            <Button
+              variant="outlined"
+              color={'primary'}
+              style={{ fontWeight: 'bold' }}
+              size="small"
+              onClick={() => {
+                setChangePasswordState({
+                  visible: true,
+                  userId,
+                  name,
+                  email,
+                })
+              }}
+            >
+              Change Password
+            </Button>
+          </Authorize>
         </Space>
       )
     },
-    [renderButtonAction, setState],
+    [
+      renderButtonAction,
+      resetPassword,
+      setChangePasswordState,
+      setUpdateUserState,
+    ],
   )
 
   type UsersType = typeof dataSource
@@ -153,8 +194,9 @@ const Admin = () => {
         }}
       />
       <UpdateUserModal />
+      <ChangePasswordModal />
     </Page>
   )
 }
 
-export default withCtx(UpdateUserCtx)(Admin)
+export default withCtx(UpdateUserCtx)(withCtx(ChangePasswordCtx)(Admin))

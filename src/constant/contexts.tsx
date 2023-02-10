@@ -18,6 +18,14 @@ export const UpdateUserCtx = createCtx({
   password: '',
   role: '' as Role,
 })
+
+export const ChangePasswordCtx = createCtx({
+  visible: false,
+  userId: '',
+  name: '',
+  email: '',
+})
+
 interface TemplateFormValuesCtx extends ITemplateFormValues {
   visible: boolean
 }
@@ -25,7 +33,7 @@ export const TemplateFormCtx = createCtx({
   name: '',
   description: '',
   visible: false,
-  isActive: (undefined as unknown) as boolean,
+  isActive: undefined as unknown as boolean,
   ref: '',
   resourceIds: [],
 } as TemplateFormValuesCtx)
