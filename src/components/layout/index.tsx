@@ -38,6 +38,7 @@ export const useLayoutStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: theme.palette.common.white,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -201,8 +202,8 @@ const Layout = (props: PropsWithChildren<LayoutProps>) => {
         >
           <Breadcrumbs />
         </Container>
-        <Container maxWidth="lg" className={classes.container}>
-          <>{children}</>
+        <Container maxWidth="lg" className={`${classes.container}`}>
+          <div>{children}</div>
         </Container>
       </main>
     </div>

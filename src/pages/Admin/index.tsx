@@ -8,7 +8,7 @@ import { EnumRole } from '../../services/auth/auth-types'
 import { useChangeRole, useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas, withCtx } from '../../utils/helper'
 import UpdateUserModal from './UpdateUserModal'
-import { Table } from 'antd'
+import { Modal, Table } from 'antd'
 import { usePageRunner } from '../../utils/custom-hook'
 import { ColumnType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
@@ -95,8 +95,14 @@ const Admin = () => {
             style={{ fontWeight: 'bold' }}
             size="small"
             onClick={() => {
-              resetPassword({
-                email,
+              Modal.confirm({
+                title: 'Confirm Reset Password',
+                content: `reset password user: ${name} (${email})`,
+                onOk: () => {
+                  resetPassword({
+                    email,
+                  })
+                },
               })
             }}
           >

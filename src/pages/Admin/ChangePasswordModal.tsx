@@ -6,7 +6,7 @@ import {
   useMemo,
   useRef,
 } from 'react'
-import { ChangePasswordCtx, UpdateUserCtx } from '../../constant/contexts'
+import { ChangePasswordCtx } from '../../constant/contexts'
 import { IUserEntity } from '../../services/auth/auth-types'
 import { Form, Input, Modal } from 'antd'
 import { IAdminChangePasswordParams } from '../../services/admin/auth-types'
@@ -32,8 +32,7 @@ const ChangePasswordForm = (props: IChangePasswordFormProps) => {
   const [form] = Form.useForm<IChangePasswordModalFormValues>()
   const { mutate: changePassword } = useChangePassword()
 
-  const [state, , { reset }] = useContext(UpdateUserCtx)
-  const { userId, name, password, role } = state
+  const [, , { reset }] = useContext(ChangePasswordCtx)
 
   const handleClose = useCallback(() => {
     reset()
@@ -42,7 +41,6 @@ const ChangePasswordForm = (props: IChangePasswordFormProps) => {
   const onSubmit = useCallback(
     (values: IChangePasswordModalFormValues) => {
       const { email, password } = values
-
       changePassword(
         {
           email,
