@@ -52,7 +52,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "env-cmd react-scripts start",
+    "start": "export PORT=8627 && react-scripts start",
     "build": "env-cmd -f .env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
