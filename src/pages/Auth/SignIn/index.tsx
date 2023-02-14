@@ -1,9 +1,12 @@
-import { useSignIn } from '../../services/auth/auth-query'
-import { ISignInParams } from '../../services/auth/auth-types'
+import { useSignIn } from '../../../services/auth/auth-query'
+import { ISignInParams } from '../../../services/auth/auth-types'
 import styled from '@emotion/styled'
-import { appConfig } from '../../config'
-import { Button, Col, Form, Input, Typography } from 'antd'
-import { appVersion } from '../../utils/helper'
+import { appConfig } from '../../../config'
+import { Button, Col, Form, Input, Row, Typography } from 'antd'
+import { appVersion } from '../../../utils/helper'
+import { Link, useLocation } from 'react-router-dom'
+import paths from '../../../constant/paths'
+import { useMemo } from 'react'
 
 const Layout = styled.div`
   position: relative;
@@ -20,18 +23,20 @@ const AppVersionLayout = styled.div`
 `
 
 const SignIn = () => {
+  const location = useLocation<{ email: string }>()
+  const { email } = location.state || {}
   const { mutateAsync: signIn } = useSignIn()
+
+  const initialValues = useMemo((): Partial<ISignInParams> => {
+    return {
+      email,
+    }
+  }, [email])
+
   return (
     <Layout>
       <Form<ISignInParams>
-        initialValues={
-          appConfig.REACT_APP_NODE_ENV === 'development'
-            ? {
-                email: 'test@gmail.com',
-                password: '123456',
-              }
-            : undefined
-        }
+        initialValues={initialValues}
         onFinish={signIn}
         layout="vertical"
       >
@@ -65,9 +70,18 @@ const SignIn = () => {
           >
             <Input.Password type="password" maxLength={20} />
           </Form.Item>
-          <Button htmlType="submit" block>
-            Submit
-          </Button>
+          <Row gutter={[10, 10]} justify="center">
+            <Col span={16}>
+              <Button type="primary" htmlType="submit" block>
+                Submit
+              </Button>
+            </Col>
+            <Col span={16}>
+              <Link to={paths.forgotPassword()}>
+                <Button block>Forgot Password</Button>
+              </Link>
+            </Col>
+          </Row>
         </Col>
       </Form>
       <AppVersionLayout>

@@ -47,3 +47,11 @@ export type IRefreshTokenResponse = {
   accessToken: string
   refreshToken: string
 }
+
+export interface IForgotPasswordParams {
+  email: string
+}
+
+export interface IForgotPasswordResponse {
+  newPassword: string
+}

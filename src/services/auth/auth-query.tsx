@@ -10,7 +10,8 @@ import {
   removeRefreshToken,
 } from './auth-action'
 import {
-  IRefreshTokenResponse,
+  IForgotPasswordParams,
+  IForgotPasswordResponse,
   ISignInParams,
   ISignInResponse,
   IUserEntity,
@@ -21,7 +22,7 @@ export const AUTH_URL = 'auth'
 export const SIGN_IN_URL = `${AUTH_URL}/register`
 export const SIGN_OUT_URL = `${AUTH_URL}/sign-out`
 export const REFRESH_TOKEN_URL = `${AUTH_URL}/refresh-token`
-
+export const FORGOT_PASSWORD_URL = `${AUTH_URL}/forgot-password`
 export const CURRENT_USER = `${USER_URL}/current-user`
 
 export const useApiHealth = () => {
@@ -116,16 +117,12 @@ export const useSignOut = () => {
   )
 }
 
-export const apiRefreshToken = async () => {
-  const { data } = await api.tomtom.post<IRefreshTokenResponse>(
-    REFRESH_TOKEN_URL,
-  )
-  const { accessToken, refreshToken } = data
-  setAccessToken(accessToken)
-  setRefreshToken(refreshToken)
-  return data
-}
-
-export const useRefreshToken = () => {
-  return useMutation(apiRefreshToken)
+export const useForgotPassword = () => {
+  return useMutation(async (params: IForgotPasswordParams) => {
+    const { data } = await api.tomtom.post<IForgotPasswordResponse>(
+      FORGOT_PASSWORD_URL,
+      params,
+    )
+    return data
+  })
 }

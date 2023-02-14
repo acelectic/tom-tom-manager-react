@@ -11,11 +11,38 @@ import './initialize'
 import { appVersion, withCtx } from './utils/helper'
 import { AppCtx } from './constant/contexts'
 import { AppSnackbar } from './components/AppSnackbar'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, notification } from 'antd'
+import { ApiErrorResponse } from './utils/api/tools'
 
 console.info(`APP VERSION: ${appVersion}`)
-
-const queryClient = new QueryClient()
+const onError = (error: unknown) => {
+  if (error instanceof ApiErrorResponse) {
+    notification.error({
+      message: 'Api Error',
+      description: error.message,
+    })
+  } else if (typeof error === 'string') {
+    notification.error({
+      message: 'Api Error',
+      description: error,
+    })
+  } else {
+    notification.error({
+      message: 'Api Error',
+      description: JSON.stringify(error),
+    })
+  }
+}
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      onError,
+    },
+    mutations: {
+      onError,
+    },
+  },
+})
 
 const App = () => {
   return (

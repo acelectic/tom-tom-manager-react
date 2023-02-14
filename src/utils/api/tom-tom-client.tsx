@@ -6,24 +6,26 @@ import axios, {
 } from 'axios'
 import dayjs from 'dayjs'
 import humps from 'humps'
-import { customRequestData, deepLoop } from './tools'
+import { ApiErrorResponse, customRequestData, deepLoop } from './tools'
 import { appVersion, sleep } from '../helper'
 import { appConfig } from '../../config'
+import { REFRESH_TOKEN_URL, SIGN_IN_URL } from '../../services/auth/auth-query'
 import {
-  REFRESH_TOKEN_URL,
-  SIGN_IN_URL,
-  apiRefreshToken,
-} from '../../services/auth/auth-query'
-import { getRefreshToken } from '../../services/auth/auth-action'
+  getRefreshToken,
+  removeAccessToken,
+  removeCookies,
+  removeRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from '../../services/auth/auth-action'
+import createAuthRefreshInterceptor from 'axios-auth-refresh'
+import { IRefreshTokenResponse } from '../../services/auth/auth-types'
 
 interface IAxiosRequestConfig extends AxiosRequestConfig {
   _retry: boolean
 }
 
-const requestInterceptor = (request: any) => {
-  const host = appConfig.REACT_APP_API_HOST
-
-  request.url = `${host}/${request.url}`
+const requestInterceptor = (request: AxiosRequestConfig) => {
   request.headers.common['App-Version'] = appVersion
 
   if (request.params) {
@@ -61,33 +63,65 @@ const errorInterceptor =
         !!refreshToken
       ) {
         originalConfig._retry = true
-        try {
-          await apiRefreshToken()
-          return axRefreshToken(originalConfig)
-        } catch (_error) {
-          return Promise.reject(_error)
-        }
+        // try {
+        //   await apiRefreshToken()
+        //   return axRefreshToken(originalConfig)
+        // } catch (_error) {
+        //   return Promise.reject(_error)
+        // }
       }
     }
 
     return Promise.reject(error)
   }
 
+// Function that will be called to refresh authorization
+const refreshAuthLogic = async (failedRequest: AxiosError) => {
+  try {
+    const ax = axios.create({
+      withCredentials: true,
+      baseURL: appConfig.REACT_APP_API_HOST,
+    })
+    const response = await ax.post<IRefreshTokenResponse>(REFRESH_TOKEN_URL)
+    const { accessToken, refreshToken } = response.data
+    setAccessToken(accessToken)
+    setRefreshToken(refreshToken)
+    return response
+  } catch (error) {
+    removeAccessToken()
+    removeRefreshToken()
+    removeCookies()
+    window.location.reload()
+    return Promise.reject(error)
+  }
+}
+
 const createClient = () => {
   const ax = axios.create({
     withCredentials: true,
+    baseURL: appConfig.REACT_APP_API_HOST,
   })
 
-  const axRefreshToken = axios.create({
-    withCredentials: true,
-  })
+  // const axRefreshToken = axios.create({
+  //   withCredentials: true,
+  //   baseURL: appConfig.REACT_APP_API_HOST,
+  // })
 
-  axRefreshToken.interceptors.response.use(responseInterceptor)
+  // axRefreshToken.interceptors.response.use(responseInterceptor)
   ax.interceptors.request.use(requestInterceptor)
   ax.interceptors.response.use(
     responseInterceptor,
-    errorInterceptor(axRefreshToken),
+    // errorInterceptor(axRefreshToken),
   )
+  // Instantiate the interceptor
+  createAuthRefreshInterceptor(ax, refreshAuthLogic, {
+    pauseInstanceWhileRefreshing: true,
+    retryInstance: axios.create({
+      withCredentials: true,
+      baseURL: appConfig.REACT_APP_API_HOST,
+    }),
+    statusCodes: [401],
+  })
   return ax
 }
 
@@ -100,13 +134,19 @@ const modifyRequestData = (data: any) => {
 
 export const tomtomClient = createClient()
 
+interface ITomTomErrorResponse {
+  error: string
+  errorCode: string
+  statusCode: number
+}
+
 export const tomtomApiWrapper = async (method: Promise<AxiosResponse>) => {
   return Promise.all([method, sleep(100)])
     .then(([res]) => res)
     .catch((e: AxiosError) => {
       const { response, message } = e
-      const { data } = response || {}
-      const { message: errorMessage } = data || {}
-      return Promise.reject(errorMessage || message || e)
+      const { data } = (response || {}) as { data: ITomTomErrorResponse }
+      const { errorCode, error } = data || {}
+      return Promise.reject(new ApiErrorResponse(errorCode || error || message))
     })
 }

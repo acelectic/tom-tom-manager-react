@@ -1,3 +1,11 @@
+import Cookies from 'js-cookie'
+
+export const cookieKeys = {
+  accessToken: 'AccessToken',
+  refreshToken: 'RefreshToken',
+  user: 'User',
+} as const
+
 export const getAccessToken = () => {
   return localStorage.getItem('ACCESS_TOKEN')
 }
@@ -20,4 +28,10 @@ export const setRefreshToken = (token: string) => {
 
 export const removeRefreshToken = () => {
   localStorage.removeItem('REFRESH_TOKEN')
+}
+
+export const removeCookies = () => {
+  Cookies.remove(cookieKeys.accessToken)
+  Cookies.remove(cookieKeys.refreshToken)
+  Cookies.remove(cookieKeys.user)
 }

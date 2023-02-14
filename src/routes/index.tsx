@@ -5,7 +5,8 @@ import paths from '../constant/paths'
 import loadable from '@loadable/component'
 
 const PageNotFound = loadable(() => import('../pages/404'))
-const SignIn = loadable(() => import('../pages/Auth'))
+const SignIn = loadable(() => import('../pages/Auth/SignIn'))
+const ForgotPassword = loadable(() => import('../pages/Auth/ForgotPassword'))
 const ProtectedRoute = loadable(() => import('./protected'))
 
 export const Routes = () => {
@@ -19,6 +20,7 @@ export const Routes = () => {
     <>Loading...</>
   ) : (
     <Switch>
+      <Route path={paths.forgotPassword()} component={ForgotPassword} />
       {!isAuthorized ? (
         <Route path={paths.signIn()} component={SignIn} />
       ) : (
