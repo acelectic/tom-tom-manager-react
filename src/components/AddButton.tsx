@@ -3,9 +3,7 @@ import { Button } from '@material-ui/core'
 import { useCallback, useState } from 'react'
 import ModalCreate, { ModalCreateProps } from './ModalCreate'
 
-const Layout = styled.div`
-  margin: 20px 0;
-`
+const Layout = styled.div``
 
 interface AddButtonProps<T extends AnyObject, K extends keyof T>
   extends Omit<ModalCreateProps<T, K>, 'visible' | 'closeModal'> {

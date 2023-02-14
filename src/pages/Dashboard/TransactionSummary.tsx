@@ -5,31 +5,18 @@ import { groupBy, range, sortBy, sumBy } from 'lodash'
 import { DatePickerField, SelectField } from '../../components/fields'
 import { Form } from 'react-final-form'
 import { OnChange } from 'react-final-form-listeners'
-import { Grid, Typography } from '@material-ui/core'
-import { numberWithCommas } from '../../utils/helper'
 import Space from '../../components/commons/Space'
 import TransactionChart from '../../components/TransactionChart'
+import { Table } from 'antd'
+import { ColumnType } from 'antd/es/table'
 
 const colors = ['#91cf96', '#c881d2', '#ffbaa2', '#29b6f6'] as const
 
-const dataSetOpts = {
-  fill: false,
-  lineTension: 0.1,
-  backgroundColor: 'white',
-  // backgroundColor: 'rgba(75,192,192,0.4)',
-  borderCapStyle: 'butt',
-  borderDash: [],
-  borderDashOffset: 0.0,
-  borderJoinStyle: 'miter',
-  pointBackgroundColor: '#fff',
-  pointBorderWidth: 1,
-  pointHoverRadius: 5,
-  // pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-  // pointHoverBorderColor: 'rgba(220,220,220,1)',
-  pointHoverBorderWidth: 2,
-  pointRadius: 1,
-  pointHitRadius: 10,
-  responsive: true,
+interface ISummaryData {
+  totalPrice: number
+  totalRemainPrice: number
+  totalUser: number
+  totalTr: number
 }
 
 const TransactionSummary = () => {
@@ -63,7 +50,7 @@ const TransactionSummary = () => {
   const transactionData = useMemo(() => {
     const start = startDate
     const dateRange = endDate.diff(start, 'day') + 1
-    const data = range(dateRange).map(d => {
+    const data = range(dateRange).map((d) => {
       const curDate = start.add(d, 'day')
       const transactionByCurDate =
         transactionsGroupByDate[curDate.format('DD/MM/YYYY')]
@@ -88,7 +75,7 @@ const TransactionSummary = () => {
   const data = useMemo(() => {
     const data = {
       labels: transactionData
-        ? transactionData.map(d => dayjs(d.date).format('DD/MM/YYYY'))
+        ? transactionData.map((d) => dayjs(d.date).format('DD/MM/YYYY'))
         : [],
       datasets: [
         {
@@ -99,7 +86,7 @@ const TransactionSummary = () => {
           pointBorderColor: colors[0],
           pointHoverBackgroundColor: colors[0],
           // pointHoverBorderColor: colors[1],
-          data: transactionData ? transactionData.map(d => d.sumPrice) : [],
+          data: transactionData ? transactionData.map((d) => d.sumPrice) : [],
         },
         {
           // ...dataSetOpts,
@@ -110,7 +97,7 @@ const TransactionSummary = () => {
           pointHoverBackgroundColor: colors[1],
           // pointHoverBorderColor: colors[1],
           data: transactionData
-            ? transactionData.map(d => d.sumRemainPrice)
+            ? transactionData.map((d) => d.sumRemainPrice)
             : [],
         },
         {
@@ -121,7 +108,7 @@ const TransactionSummary = () => {
           pointBorderColor: colors[2],
           pointHoverBackgroundColor: colors[2],
           // pointHoverBorderColor: colors[0],
-          data: transactionData ? transactionData.map(d => d.sumUsers) : [],
+          data: transactionData ? transactionData.map((d) => d.sumUsers) : [],
         },
         {
           // ...dataSetOpts,
@@ -131,12 +118,13 @@ const TransactionSummary = () => {
           pointBorderColor: colors[3],
           pointHoverBackgroundColor: colors[3],
           // pointHoverBorderColor: colors[0],
-          data: transactionData ? transactionData.map(d => d.numTr) : [],
+          data: transactionData ? transactionData.map((d) => d.numTr) : [],
         },
       ],
     }
     return data
   }, [transactionData])
+
   const statusOptions = useMemo((): BaseOptions[] => {
     return [
       {
@@ -158,45 +146,62 @@ const TransactionSummary = () => {
     () => sumBy(transactionData, ({ sumPrice }) => sumPrice),
     [transactionData],
   )
-  const totalRemianPrice = useMemo(
+
+  const totalRemainPrice = useMemo(
     () => sumBy(transactionData, ({ sumRemainPrice }) => sumRemainPrice),
     [transactionData],
   )
+
   const totalUser = useMemo(
     () => sumBy(transactionData, ({ sumUsers }) => sumUsers),
     [transactionData],
   )
-  const totalTr = useMemo(() => sumBy(transactionData, ({ numTr }) => numTr), [
-    transactionData,
-  ])
+
+  const totalTr = useMemo(
+    () => sumBy(transactionData, ({ numTr }) => numTr),
+    [transactionData],
+  )
+
+  const dataSource = useMemo((): ISummaryData[] => {
+    return [
+      {
+        totalPrice,
+        totalRemainPrice,
+        totalUser,
+        totalTr,
+      },
+    ]
+  }, [totalPrice, totalRemainPrice, totalTr, totalUser])
+
+  const columns = useMemo((): ColumnType<ISummaryData>[] => {
+    return [
+      {
+        dataIndex: 'totalPrice',
+        title: 'Total Price',
+      },
+      {
+        dataIndex: 'totalRemainPrice',
+        title: 'Total Remain Price',
+      },
+      {
+        dataIndex: 'totalUser',
+        title: 'Total User',
+      },
+      {
+        dataIndex: 'totalTr',
+        title: 'Total Tr',
+      },
+    ]
+  }, [])
+
   return (
     <div>
-      <Grid container>
-        <Grid item md={3}>
-          <Typography variant="h6">{`TotalPrice: ${numberWithCommas(
-            totalPrice,
-          )}`}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography variant="h6">{`TotalRemianPrice: ${numberWithCommas(
-            totalRemianPrice,
-          )}`}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography variant="h6">{`TotalUser: ${numberWithCommas(
-            totalUser,
-          )}`}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography variant="h6">{`TotalTr: ${numberWithCommas(
-            totalTr,
-          )}`}</Typography>
-        </Grid>
-      </Grid>
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
       <Form
         onSubmit={() => {}}
         subscription={{ values: true }}
         initialValues={{
+          status: 'All',
           startDate,
           endDate,
         }}
@@ -211,7 +216,7 @@ const TransactionSummary = () => {
                   options={statusOptions}
                 />
                 <OnChange name="status">
-                  {value => {
+                  {(value) => {
                     setStatus(value)
                   }}
                 </OnChange>
@@ -220,16 +225,14 @@ const TransactionSummary = () => {
                 <DatePickerField
                   name="startDate"
                   label="StartDate"
-                  minDate={dayjs()
-                    .subtract(30, 'day')
-                    .toDate()}
+                  minDate={dayjs().subtract(30, 'day').toDate()}
                   maxDate={endDate.toDate()}
-                  allowNull
                   todayLabel="Today"
+                  allowNull
                   showTodayButton
                 />
                 <OnChange name="startDate">
-                  {value => {
+                  {(value) => {
                     const newDate = dayjs(value)
                     if (startDate.diff(newDate) !== 0) {
                       setStartDate(newDate)
@@ -247,7 +250,7 @@ const TransactionSummary = () => {
                   showTodayButton
                 />
                 <OnChange name="endDate">
-                  {value => {
+                  {(value) => {
                     const newDate = dayjs(value)
                     if (endDate.diff(newDate) !== 0) {
                       setEndDate(newDate)
