@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
-import { ceil, sumBy } from 'lodash'
+import { ceil, keyBy, sumBy } from 'lodash'
 import { useMemo } from 'react'
-import { Form, FormSpy } from 'react-final-form'
 import Space from '../../components/commons/Space'
 import Text from '../../components/commons/Text'
 import { MultiSelectField, SelectField } from '../../components/fields'
@@ -10,6 +9,8 @@ import { useCreateTransaction } from '../../services/transaction/transaction-que
 import { CreateTransactionParams } from '../../services/transaction/transaction-types'
 import { useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas } from '../../utils/helper'
+import { Button, Col, Form, Modal, Row, Select, Tag, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const FormLayout = styled.form`
   margin: 20px;
@@ -22,6 +23,11 @@ const FormLayout = styled.form`
 interface CreateTransactionFormValues extends CreateTransactionParams {}
 
 const TransactionForm = () => {
+  const [form] = Form.useForm<CreateTransactionFormValues>()
+  const templateId = Form.useWatch('templateId', form)
+  const userIds = Form.useWatch('userIds', form)
+
+  const { t } = useTranslation()
   const { mutate: createTransaction } = useCreateTransaction()
   const { data: usersPagination } = useGetUsers()
   const { data: templates } = useGetTemplates({
@@ -31,18 +37,22 @@ const TransactionForm = () => {
   const users = useMemo(
     () =>
       usersPagination
-        ? usersPagination?.items.map(d => ({
+        ? usersPagination?.items.map((d) => ({
             ...d,
             balance: numberWithCommas(d.balance),
           }))
         : [],
     [usersPagination],
   )
+
+  const usersHash = useMemo(() => {
+    return keyBy(users, 'id')
+  }, [users])
+
   const usersOption = useMemo(() => {
     return (
-      users?.map(
-        ({ id, name }) => ({ value: id, label: name } as BaseOptions),
-      ) || []
+      users?.map(({ id, name }): BaseOptions => ({ value: id, label: name })) ||
+      []
     )
   }, [users])
 
@@ -57,67 +67,110 @@ const TransactionForm = () => {
     )
   }, [templates])
 
+  const templateSelected = useMemo(
+    () => templates?.find(({ id }) => id === templateId),
+    [templateId, templates],
+  )
+  const sumPrice = useMemo(
+    () => sumBy(templateSelected?.resources, 'price'),
+    [templateSelected?.resources],
+  )
+
   return (
-    <Form<CreateTransactionFormValues>
-      onSubmit={values => {
-        createTransaction(values)
+    <Form
+      form={form}
+      onFinish={(values) => {
+        Modal.confirm({
+          title: t('Confirm Create Transaction'),
+          content: (
+            <Row gutter={[12, 12]}>
+              <Col>
+                <Typography>Template: {templateSelected?.ref}</Typography>
+              </Col>
+              <Col>
+                <Typography>
+                  Price per User:{' '}
+                  {`${numberWithCommas(ceil(sumPrice / userIds.length))}`}
+                </Typography>
+              </Col>
+              <Col span={24}></Col>
+              {userIds.map((userId) => (
+                <Col key={userId}>
+                  <Tag color="default">{usersHash[userId].name}</Tag>
+                </Col>
+              ))}
+            </Row>
+          ),
+          onOk: () => {
+            createTransaction(values)
+          },
+        })
       }}
       initialValues={{
         userIds: [],
         templateId: templates?.length ? templates[0].id : '',
       }}
+      layout="vertical"
     >
-      {({ handleSubmit }) => {
-        return (
-          <FormLayout>
-            <SelectField
-              name="templateId"
-              label="Template"
-              options={templatesOption}
-            />
-            <MultiSelectField
-              name="userIds"
-              label="User"
-              options={usersOption}
-              required
-            />
-            <FormSpy<CreateTransactionFormValues>>
-              {({ values }) => {
-                const { templateId, userIds } = values
-                const templateSelected = templates?.find(
-                  ({ id }) => id === templateId,
-                )
-                const sumPrice = sumBy(templateSelected?.resources, 'price')
-
-                return templateSelected ? (
-                  <Space
-                    direction="column"
-                    spacing={10}
-                    style={{ marginTop: 40 }}
-                  >
+      <Row gutter={[24, 24]}>
+        <Col span={8}>
+          <Form.Item
+            name="templateId"
+            label="Template"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select options={templatesOption} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="userIds"
+            label="User"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select options={usersOption} mode="tags" />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item shouldUpdate>
+            {() => {
+              return templateSelected ? (
+                <Row gutter={[16, 16]}>
+                  <Col>
                     <Text>
                       Template:{' '}
                       {`${templateSelected?.ref}: ${numberWithCommas(
                         sumPrice,
                       )}`}
                     </Text>
-                    <>
-                      {userIds?.length ? (
-                        <Text>
-                          Price per User: {`${ceil(sumPrice / userIds.length)}`}
-                        </Text>
-                      ) : null}
-                    </>
-                  </Space>
-                ) : null
-              }}
-            </FormSpy>
-            <button type="button" title="button" onClick={handleSubmit}>
-              Submit
-            </button>
-          </FormLayout>
-        )
-      }}
+                  </Col>
+                  <Col>
+                    {userIds?.length ? (
+                      <Text>
+                        Price per User:{' '}
+                        {`${numberWithCommas(ceil(sumPrice / userIds.length))}`}
+                      </Text>
+                    ) : null}
+                  </Col>
+                </Row>
+              ) : null
+            }}
+          </Form.Item>
+        </Col>
+        <Col span={6}>
+          <Button type="primary" htmlType="submit" block>
+            Submit
+          </Button>
+        </Col>
+      </Row>
     </Form>
   )
 }

@@ -1,43 +1,47 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useGetTransactionsHistory } from '../../services/transaction/transaction-query'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { groupBy, range, sortBy, sumBy } from 'lodash'
-import { DatePickerField, SelectField } from '../../components/fields'
-import { Form } from 'react-final-form'
-import { OnChange } from 'react-final-form-listeners'
-import Space from '../../components/commons/Space'
 import TransactionChart from '../../components/TransactionChart'
-import { Table } from 'antd'
+import { DatePicker, Form, Row, Col, Select, Table } from 'antd'
 import { ColumnType } from 'antd/es/table'
+import { RangePickerProps } from 'antd/es/date-picker'
+import shortid from 'shortid'
 
 const colors = ['#91cf96', '#c881d2', '#ffbaa2', '#29b6f6'] as const
 
+const rangePresets: RangePickerProps['presets'] = [
+  { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
+  { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
+  { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
+  { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] },
+]
+
 interface ISummaryData {
+  key: string
   totalPrice: number
   totalRemainPrice: number
   totalUser: number
   totalTr: number
 }
 
+interface IFilterValues {
+  status: 'All' | true | false
+  dateFilter: [Dayjs, Dayjs]
+}
+
 const TransactionSummary = () => {
-  const [startDate, setStartDate] = useState(dayjs().subtract(7, 'day'))
-  const [endDate, setEndDate] = useState(dayjs())
-  const [status, setStatus] = useState()
+  const [form] = Form.useForm<IFilterValues>()
+  const status = Form.useWatch('status', form)
+  const dateFilter = Form.useWatch('dateFilter', form)
+  const [startDate, endDate] = dateFilter || [
+    dayjs().subtract(7, 'day'),
+    dayjs(),
+  ]
 
   const { data: transactions } = useGetTransactionsHistory({
-    status,
-    // endDate: endDate
-    //   .millisecond(0)
-    //   .second(0)
-    //   .minute(0)
-    //   .hour(0)
-    //   .toISOString(),
-    startDate: startDate
-      .millisecond(0)
-      .second(0)
-      .minute(0)
-      .hour(0)
-      .toISOString(),
+    status: status === 'All' ? undefined : status,
+    startDate: startDate.endOf('day').toISOString(),
   })
 
   const transactionsGroupByDate = useMemo(
@@ -142,6 +146,13 @@ const TransactionSummary = () => {
     ]
   }, [])
 
+  const initialValues = useMemo((): IFilterValues => {
+    return {
+      status: 'All',
+      dateFilter: [dayjs().subtract(7, 'day'), dayjs()],
+    }
+  }, [])
+
   const totalPrice = useMemo(
     () => sumBy(transactionData, ({ sumPrice }) => sumPrice),
     [transactionData],
@@ -165,6 +176,7 @@ const TransactionSummary = () => {
   const dataSource = useMemo((): ISummaryData[] => {
     return [
       {
+        key: shortid(),
         totalPrice,
         totalRemainPrice,
         totalUser,
@@ -194,113 +206,88 @@ const TransactionSummary = () => {
     ]
   }, [])
 
+  const disabledDate = useCallback(
+    (d) => {
+      const date = dayjs(d)
+      const minDate = dayjs().subtract(30, 'day')
+      const maxDate = endDate
+      return (
+        date.isAfter(maxDate, 'd') ||
+        date.isSame(maxDate, 'd') ||
+        date.isBefore(minDate, 'd') ||
+        date.isSame(minDate, 'd')
+      )
+    },
+    [endDate],
+  )
   return (
-    <div>
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
-      <Form
-        onSubmit={() => {}}
-        subscription={{ values: true }}
-        initialValues={{
-          status: 'All',
-          startDate,
-          endDate,
-        }}
-      >
-        {({ form }) => {
-          return (
-            <Space direction="row" style={{ marginTop: 20, marginBottom: 20 }}>
-              <div>
-                <SelectField
-                  name="status"
-                  label="Status"
-                  options={statusOptions}
+    <Row gutter={[24, 24]}>
+      <Col span={24}>
+        <Table
+          rowKey="key"
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+        />
+      </Col>
+      <Col span={24}>
+        <Form form={form} initialValues={initialValues} layout="vertical">
+          <Row gutter={[16, 16]}>
+            <Col span={7}>
+              <Form.Item name="status" label="Status">
+                <Select options={statusOptions} />
+              </Form.Item>
+            </Col>
+            <Col span={14}>
+              <Form.Item name="dateFilter" label="Date Filter">
+                <DatePicker.RangePicker
+                  presets={rangePresets}
+                  disabledDate={disabledDate}
+                  format="YYYY/MM/DD"
                 />
-                <OnChange name="status">
-                  {(value) => {
-                    setStatus(value)
-                  }}
-                </OnChange>
-              </div>
-              <div>
-                <DatePickerField
-                  name="startDate"
-                  label="StartDate"
-                  minDate={dayjs().subtract(30, 'day').toDate()}
-                  maxDate={endDate.toDate()}
-                  todayLabel="Today"
-                  allowNull
-                  showTodayButton
-                />
-                <OnChange name="startDate">
-                  {(value) => {
-                    const newDate = dayjs(value)
-                    if (startDate.diff(newDate) !== 0) {
-                      setStartDate(newDate)
-                    }
-                  }}
-                </OnChange>
-              </div>
-              <div>
-                <DatePickerField
-                  name="endDate"
-                  label="EndDate"
-                  maxDate={dayjs().toDate()}
-                  allowNull
-                  todayLabel="Today"
-                  showTodayButton
-                />
-                <OnChange name="endDate">
-                  {(value) => {
-                    const newDate = dayjs(value)
-                    if (endDate.diff(newDate) !== 0) {
-                      setEndDate(newDate)
-                    }
-                    if (endDate < startDate && startDate.diff(newDate) !== 0) {
-                      setStartDate(newDate)
-                    }
-                  }}
-                </OnChange>
-              </div>
-            </Space>
-          )
-        }}
-      </Form>
-      <TransactionChart
-        data={transactionData}
-        xAixKey={'date'}
-        renderOptions={[
-          {
-            label: 'RemainPrice',
-            key: 'sumRemainPrice',
-            color: colors[0],
-          },
-          {
-            label: 'Price',
-            key: 'sumPrice',
-            color: colors[1],
-          },
-          {
-            label: 'Users',
-            key: 'sumUsers',
-            color: colors[3],
-          },
-        ]}
-        chartOption={{
-          // sumPrice: {
-          //   min: 0,
-          //   max: 3000,
-          // },
-          // sumRemainPrice: {
-          //   min: 0,
-          //   max: 3000,
-          // },
-          sumUsers: {
-            position: 'right',
-            type: 'linear',
-          },
-        }}
-      />
-    </div>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Col>
+      <Col span={24}>
+        <TransactionChart
+          data={transactionData}
+          xAixKey={'date'}
+          renderOptions={[
+            {
+              label: 'RemainPrice',
+              key: 'sumRemainPrice',
+              color: colors[0],
+            },
+            {
+              label: 'Price',
+              key: 'sumPrice',
+              color: colors[1],
+            },
+            {
+              label: 'Users',
+              key: 'sumUsers',
+              color: colors[3],
+            },
+          ]}
+          chartOption={{
+            // sumPrice: {
+            //   min: 0,
+            //   max: 3000,
+            // },
+            // sumRemainPrice: {
+            //   min: 0,
+            //   max: 3000,
+            // },
+            sumUsers: {
+              position: 'right',
+              type: 'linear',
+            },
+          }}
+        />
+      </Col>
+    </Row>
   )
 }
 export default TransactionSummary

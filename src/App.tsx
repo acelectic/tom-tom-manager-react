@@ -13,6 +13,8 @@ import { AppCtx } from './constant/contexts'
 import { AppSnackbar } from './components/AppSnackbar'
 import { ConfigProvider, notification } from 'antd'
 import { ApiErrorResponse } from './utils/api/tools'
+import 'dayjs/locale/th'
+import locale from 'antd/locale/th_TH'
 
 console.info(`APP VERSION: ${appVersion}`)
 const onError = (error: unknown) => {
@@ -20,16 +22,19 @@ const onError = (error: unknown) => {
     notification.error({
       message: 'Api Error',
       description: error.message,
+      placement: 'bottomRight',
     })
   } else if (typeof error === 'string') {
     notification.error({
       message: 'Api Error',
       description: error,
+      placement: 'bottomRight',
     })
   } else {
     notification.error({
       message: 'Api Error',
       description: JSON.stringify(error),
+      placement: 'bottomRight',
     })
   }
 }
@@ -52,6 +57,7 @@ const App = () => {
           <Suspense fallback={<div>...loading</div>}>
             <AppSnackbar />
             <ConfigProvider
+              locale={locale}
               form={{
                 validateMessages: {
                   required: '${label} is Required!',
