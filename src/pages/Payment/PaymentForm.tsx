@@ -1,10 +1,4 @@
-import styled from '@emotion/styled'
-import { useMemo, useState } from 'react'
-import { Field, Form, FormSpy } from 'react-final-form'
-import { OnChange } from 'react-final-form-listeners'
-import Hidden from '../../components/commons/Hidden'
-import Space from '../../components/commons/Space'
-import { InputField, RadioField, SelectField } from '../../components/fields'
+import { useMemo } from 'react'
 import { useCreatePayment } from '../../services/payment/payment-query'
 import {
   CreatePaymentParams,
@@ -13,30 +7,29 @@ import {
 import { useGetResources } from '../../services/resource/resource-query'
 import { useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas } from '../../utils/helper'
-
-const FormLayout = styled.form`
-  margin: 20px;
-
-  > button {
-    margin-top: 20px;
-  }
-`
+import { Button, Col, Form, Radio, Select } from 'antd'
+import { useGetTransactions } from '../../services/transaction/transaction-query'
+import { chain } from 'lodash'
+import InputNumber from '../../components/commons/InputNumber'
 
 interface CreatePaymentFormValues extends CreatePaymentParams {}
 
 const PaymentForm = () => {
+  const [form] = Form.useForm<CreatePaymentFormValues>()
+  const userId = Form.useWatch('userId', form)
+  const type = Form.useWatch('type', form)
+
   const { mutate: createPayment } = useCreatePayment()
-  const [formValues, setFormValues] = useState<CreatePaymentFormValues>()
   const { data: usersPagination } = useGetUsers()
   const { data: resources } = useGetResources()
-  // const { data: transactions } = useGetTransactions({
-  //   userId: formValues?.userId,
-  // })
-  type UsersType = typeof users
+  const { data: transactions } = useGetTransactions({
+    userId,
+  })
+
   const users = useMemo(
     () =>
       usersPagination
-        ? usersPagination?.items.map(d => ({
+        ? usersPagination?.items.map((d) => ({
             ...d,
             balance: numberWithCommas(d.balance),
           }))
@@ -60,13 +53,11 @@ const PaymentForm = () => {
     )
   }, [resources])
 
-  // const transactionsOption = useMemo(() => {
-  //   return (
-  //     transactions?.map(
-  //       ({ id, ref }) => ({ value: id, label: ref } as BaseOptions),
-  //     ) || []
-  //   )
-  // }, [transactions])
+  const transactionsOption = useMemo(() => {
+    return chain(transactions?.items || [])
+      .map(({ id, ref }): BaseOptions => ({ value: id, label: ref.toString() }))
+      .value()
+  }, [transactions])
 
   const typeOptions = useMemo(
     (): BaseOptions[] => [
@@ -82,89 +73,96 @@ const PaymentForm = () => {
     [],
   )
 
+  const initialValues = useMemo((): DeepPartial<CreatePaymentFormValues> => {
+    return {
+      type: PaymentType.BUY,
+    }
+  }, [])
+
   return (
-    <Form<CreatePaymentFormValues>
-      onSubmit={(values, form) => {
-        // alert(JSON.stringify(values))
+    <Form
+      form={form}
+      initialValues={initialValues}
+      onFinish={(values) => {
+        alert(JSON.stringify(values))
         createPayment(values, {
           onSuccess: () => {
-            form.reset()
+            form.resetFields()
           },
         })
       }}
-      subscription={{ submitting: true, validating: true }}
     >
-      {({ handleSubmit, values, form }) => {
-        return (
-          <FormLayout>
-            <Space direction="column" spacing={5}>
-              <InputField name="price" label="Price" required />
-              <SelectField name="userId" label="User" options={usersOption} />
-              <OnChange name="userId">
-                {() => {
-                  form.change('transactionId')
-                }}
-              </OnChange>
-              <RadioField
-                name="type"
-                label="Payment Type"
-                options={typeOptions}
-              />
-              <OnChange name="type">
-                {value => {
-                  switch (value) {
-                    case PaymentType.BUY:
-                      if (
-                        form.getRegisteredFields().includes('transactionId')
-                      ) {
-                        form.change('transactionId')
-                      }
-                      break
-                    case PaymentType.PAID:
-                      if (form.getRegisteredFields().includes('resourceId')) {
-                        form.change('resourceId')
-                      }
-                      break
-                    default:
-                      break
-                  }
-                }}
-              </OnChange>
-              <Field name="type">
-                {({ input }) => {
-                  return (
-                    <>
-                      {/* <Hidden hide={input.value !== PaymentType.PAID}>
-                        <SelectField
-                          name="transactionId"
-                          label="Transaction"
-                          options={transactionsOption}
-                        />
-                      </Hidden> */}
-                      <Hidden hide={input.value !== PaymentType.BUY}>
-                        <SelectField
-                          name="resourceId"
-                          label="Resource"
-                          options={resourcesOption}
-                        />
-                      </Hidden>
-                    </>
-                  )
-                }}
-              </Field>
-              <button type="button" title="button" onClick={handleSubmit}>
-                Submit
-              </button>
-            </Space>
-            <FormSpy<CreatePaymentFormValues> subscription={{ values: true }}>
-              {({ values }) => {
-                setFormValues(values)
-                return <></>
-              }}
-            </FormSpy>
-          </FormLayout>
-        )
-      }}
+      <Col>
+        <Form.Item
+          name="price"
+          label="Price"
+          rules={[
+            {
+              type: 'number',
+              required: true,
+              min: 1,
+              max: 10000,
+            },
+          ]}
+          // help="min: 1, max: 10,000"
+        >
+          <InputNumber allowNegative={false} />
+        </Form.Item>
+        <Form.Item
+          name="userId"
+          label="User"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select options={usersOption} />
+        </Form.Item>
+        <Form.Item
+          name="type"
+          label="Payment Type"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Radio.Group options={typeOptions} />
+        </Form.Item>
+
+        {type === PaymentType.PAID ? (
+          <Form.Item
+            name="transactionId"
+            label="Transaction"
+            dependencies={['type']}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select options={transactionsOption} />
+          </Form.Item>
+        ) : (
+          <Form.Item
+            name="resourceId"
+            label="Resource"
+            dependencies={['type']}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select options={resourcesOption} />
+          </Form.Item>
+        )}
+
+        <Button htmlType="submit" type="primary">
+          Submit
+        </Button>
+      </Col>
     </Form>
   )
 }

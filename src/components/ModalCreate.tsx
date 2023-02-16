@@ -1,47 +1,6 @@
-import { makeStyles } from '@material-ui/core'
 import { capitalize } from 'lodash'
 import { Ref, useCallback, useImperativeHandle, useRef } from 'react'
 import { Input, Modal, Form } from 'antd'
-
-const useAppModalStyles = makeStyles({
-  appModal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  layout: {
-    display: 'flex',
-    flexFlow: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    background: '#FFFFFF',
-    padding: '2.188rem',
-    borderRadius: '1.25rem',
-    '&:focus': {
-      outline: 'unset',
-    },
-  },
-  header: {
-    marginBottom: '0.625rem',
-    textAlign: 'left',
-  },
-  closeIcon: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%',
-  },
-  body: {
-    marginBottom: '1.625rem',
-    textAlign: 'center',
-  },
-  footer: {
-    display: 'flex',
-    justifyContent: 'center',
-    '& > *:first-of-type(1)': {
-      marginRight: '0.625rem',
-    },
-  },
-})
 
 interface IModalCreateFormRef {
   submit: () => void
@@ -62,6 +21,7 @@ const ModalCreateFrom = <T extends AnyObject, K extends keyof T = keyof T>(
     const temp = fieldName as string
     return (
       <Form.Item
+        key={temp}
         label={capitalize(temp)}
         name={temp}
         rules={[
@@ -77,8 +37,6 @@ const ModalCreateFrom = <T extends AnyObject, K extends keyof T = keyof T>(
     )
   }, [])
 
-  const classes = useAppModalStyles()
-
   useImperativeHandle(
     elmRef,
     () => {
@@ -92,7 +50,7 @@ const ModalCreateFrom = <T extends AnyObject, K extends keyof T = keyof T>(
   )
 
   return (
-    <div className={`content ${classes.layout}`}>
+    <div className={`content`}>
       <Form<T>
         form={form}
         initialValues={{}}

@@ -15,7 +15,7 @@ import SideMenu from './SideMenu'
 import clsx from 'clsx'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import Breadcrumbs from './Breadcrumbs'
+import AppBreadcrumb from './Breadcrumbs'
 import { Typography } from 'antd'
 import styled from '@emotion/styled'
 import { appVersion } from '../../utils/helper'
@@ -200,7 +200,7 @@ const Layout = (props: PropsWithChildren<LayoutProps>) => {
           maxWidth="lg"
           className={`${classes.container} ${classes.breadcrumb}`}
         >
-          <Breadcrumbs />
+          <AppBreadcrumb />
         </Container>
         <Container maxWidth="lg" className={`${classes.container}`}>
           <div>{children}</div>

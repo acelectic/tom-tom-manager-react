@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react'
-import BreadcrumbsMui from '@material-ui/core/Breadcrumbs'
+import { useMemo } from 'react'
 import { useRouter } from '../../utils/helper'
 import { isUUID } from 'class-validator'
 import { capitalize } from 'lodash'
 import { Link } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
-import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+import { Breadcrumb } from 'antd'
 
 const customLabel: { [key: string]: string } = {}
 export type ItemProps = {
@@ -14,7 +12,7 @@ export type ItemProps = {
 }
 
 const makePaths = (pathname: string) => {
-  let p = pathname.split('/').filter(value => !!value)
+  let p = pathname.split('/').filter((value) => !!value)
   return p.reduce((result, rawLabel, i) => {
     const label = isUUID(rawLabel)
       ? capitalize(`Detail`)
@@ -30,41 +28,31 @@ const makePaths = (pathname: string) => {
   }, [] as ItemProps[])
 }
 
-const Breadcrumbs = () => {
+const AppBreadcrumb = () => {
   const { pathname } = useRouter()
 
   const pathList = useMemo(() => {
     let paths = makePaths(pathname)
     return paths
   }, [pathname])
+
   return (
-    <BreadcrumbsMui
-      aria-label="breadcrumb"
-      separator={<NavigateNextIcon fontSize="small" />}
-    >
+    <Breadcrumb>
       {pathList.map((p, i) => {
         return (
-          <Link
-            key={p.path}
-            to={p.path}
-            style={{
-              textDecoration: 'none',
-            }}
-          >
-            <Typography
-              color={
-                i !== pathList.length - 1 ? 'textSecondary' : 'textPrimary'
-              }
+          <Breadcrumb.Item key={p.path}>
+            <Link
+              to={p.path}
               style={{
-                fontWeight: i !== pathList.length - 1 ? 'unset' : 'bold',
+                textDecoration: 'none',
               }}
             >
               {p.label}
-            </Typography>
-          </Link>
+            </Link>
+          </Breadcrumb.Item>
         )
       })}
-    </BreadcrumbsMui>
+    </Breadcrumb>
   )
 }
-export default Breadcrumbs
+export default AppBreadcrumb

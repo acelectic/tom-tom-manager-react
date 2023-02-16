@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { Button } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import paths from '../constant/paths'
 import { numberWithCommas } from '../utils/helper'
@@ -10,7 +9,7 @@ import { useConfirmUserAllPayments } from '../services/payment/payment-query'
 import Authorize from './commons/Authorize'
 import { sumBy } from 'lodash'
 import { EnumRole } from '../services/auth/auth-types'
-import { Col, Modal, Table, Typography } from 'antd'
+import { Button, Col, Modal, Table, Typography } from 'antd'
 import { ColumnType } from 'antd/es/table'
 import { PaymentStatus } from '../services/payment/payment-types'
 
@@ -79,9 +78,8 @@ const TableUsers = (props: TableUsersProps) => {
           return (
             <Authorize roles={[EnumRole.ADMIN]} allowLocalAdmin>
               <Button
-                variant="outlined"
-                color={'secondary'}
-                style={{ fontWeight: 'bold' }}
+                danger
+                type="primary"
                 size="small"
                 disabled={!sumPrice}
                 onClick={() => {

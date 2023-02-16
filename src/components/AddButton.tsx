@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { Button } from '@material-ui/core'
 import { useCallback, useState } from 'react'
 import ModalCreate, { ModalCreateProps } from './ModalCreate'
+import { Button } from 'antd'
 
 const Layout = styled.div``
 
@@ -37,7 +37,7 @@ const AddButton = <T extends AnyObject, K extends keyof T = keyof T>(
   )
   return (
     <Layout>
-      <Button variant="outlined" color="primary" onClick={openModal}>
+      <Button type="primary" onClick={openModal}>
         {name}
       </Button>
       <ModalCreate

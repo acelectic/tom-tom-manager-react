@@ -20,10 +20,8 @@ const Setting = () => {
   const { data: templates } = useGetTemplates()
   const { mutate: createTemplate } = useCreateTemplate()
   const { mutate: updateTemplate } = useUpdateTemplate()
-  const {
-    mutate: setActiveStatus,
-    isLoading: isSetActiveStatusLoading,
-  } = useUpdateTemplateIsActive()
+  const { mutate: setActiveStatus, isLoading: isSetActiveStatusLoading } =
+    useUpdateTemplateIsActive()
   const [, setState] = useContext(TemplateFormCtx)
 
   const onSubmitTemplateForm = useCallback(
@@ -84,7 +82,7 @@ const Setting = () => {
               checkedChildren="Active"
               unCheckedChildren="Inactive"
               loading={isSetActiveStatusLoading}
-              onChange={checked => {
+              onChange={(checked) => {
                 setActiveStatus({
                   templateId,
                   isActive: checked,
@@ -118,7 +116,7 @@ const Setting = () => {
                   description,
                   isActive,
                   ref,
-                  resourceIds: resources ? resources.map(d => d.id) : [],
+                  resourceIds: resources ? resources.map((d) => d.id) : [],
                 })
               }}
             >
@@ -145,13 +143,15 @@ const Setting = () => {
         </Col>
         <Col span={24}>
           <Table
+            rowKey="id"
             dataSource={templates}
             columns={columns}
             expandable={{
-              expandedRowRender: record => {
+              expandedRowRender: (record) => {
                 const { resources = [] } = record
                 return (
                   <Table
+                    rowKey="id"
                     columns={[
                       {
                         title: 'Ref',

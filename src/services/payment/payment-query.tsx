@@ -5,7 +5,6 @@ import {
   UseQueryOptions,
 } from 'react-query'
 import { api } from '../../utils/api'
-import { useSnackbar } from '../../utils/custom-hook'
 import {
   TRANSACTION_HISTORY_URL,
   TRANSACTION_URL,
@@ -63,6 +62,9 @@ export const useCreatePayment = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries([PAYMENT_URL])
+        queryClient.invalidateQueries([TRANSACTION_URL])
+        queryClient.invalidateQueries([TRANSACTION_HISTORY_URL])
+        queryClient.invalidateQueries([USER_URL])
       },
     },
   )

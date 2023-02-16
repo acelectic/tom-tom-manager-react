@@ -24,6 +24,7 @@ declare global {
   interface BaseOptions {
     value: any
     label: string
+    disabled?: boolean
   }
 
   interface IPaginationMeta {

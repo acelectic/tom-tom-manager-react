@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core'
 import dayjs from 'dayjs'
 import { useCallback, useMemo } from 'react'
 import { EnumRole } from '../services/auth/auth-types'
@@ -9,7 +8,7 @@ import {
 import { PaymentStatus } from '../services/payment/payment-types'
 import { usePageRunner, useSnackbar } from '../utils/custom-hook'
 import { numberWithCommas } from '../utils/helper'
-import { Col, Modal, Table, Tag, Typography } from 'antd'
+import { Button, Col, Modal, Table, Tag, Typography } from 'antd'
 import Authorize from './commons/Authorize'
 import Page from './commons/Page'
 import { ColumnType } from 'antd/es/table'
@@ -63,10 +62,7 @@ const TablePayments = (props: TablePaymentsProps) => {
       return (
         <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
           <Button
-            variant="outlined"
-            color={'primary'}
-            style={{ fontWeight: 'bold' }}
-            size="small"
+            type="primary"
             onClick={() => {
               Modal.confirm({
                 title: 'Confirm Payment',
@@ -143,26 +139,41 @@ const TablePayments = (props: TablePaymentsProps) => {
         },
       },
       {
+        title: 'Type',
+        dataIndex: 'type',
+      },
+      {
         title: 'Price',
         dataIndex: 'price',
       },
       {
-        title: 'Transaction',
+        title: (
+          <Col>
+            <Col>Transaction /</Col>
+            <Col>Resource</Col>
+          </Col>
+        ),
         dataIndex: 'transaction',
         render: (value, record) => {
-          const { transaction } = record
-          const { id: transactionId, ref } = transaction
-          return (
-            <Link
-              to={paths.transactionDetail({
-                routeParam: {
-                  transactionId,
-                },
-              })}
-            >
-              {ref.toString().padStart(6, '0')}
-            </Link>
-          )
+          const { transaction, resource } = record
+          if (transaction) {
+            const { id: transactionId, ref } = transaction
+            return (
+              <Link
+                to={paths.transactionDetail({
+                  routeParam: {
+                    transactionId,
+                  },
+                })}
+              >
+                {ref?.toString().padStart(6, '0')}
+              </Link>
+            )
+          }
+
+          if (resource) {
+            return <Typography>{resource}</Typography>
+          }
         },
       },
       {

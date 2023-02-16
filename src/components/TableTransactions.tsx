@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core'
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import paths from '../constant/paths'
@@ -10,7 +9,7 @@ import {
 import { usePageRunner } from '../utils/custom-hook'
 import Authorize from './commons/Authorize'
 import Page from './commons/Page'
-import { Table, Tag } from 'antd'
+import { Button, Table, Tag } from 'antd'
 import { ColumnType } from 'antd/es/table'
 
 interface TableTransactionsProps {
@@ -46,12 +45,7 @@ const TableTransactions = (props: TableTransactionsProps) => {
             },
           })}
         >
-          <Button
-            variant="outlined"
-            color={'primary'}
-            style={{ fontWeight: 'bold' }}
-            size="small"
-          >
+          <Button type="link" color={'primary'} size="small">
             See Detail
           </Button>
         </Link>

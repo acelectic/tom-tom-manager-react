@@ -1,16 +1,20 @@
+import loadable from '@loadable/component'
 import Page from '../../components/commons/Page'
-// import { lazy } from 'react'
 import TablePayments from '../../components/TablePayments'
-// const PaymentForm = lazy(() => import('./PaymentForm'))
+import { EnumRole } from '../../services/auth/auth-types'
+import Authorize from '../../components/commons/Authorize'
+import { Suspense } from 'react'
+
+const PaymentForm = loadable(() => import('./PaymentForm'))
 
 const Payment = () => {
   return (
     <Page title={'Payment Management'}>
-      {/* <Authenlize roles={[Role.ADMIN, Role.MANAGER]}>
+      <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
         <Suspense fallback={<div>Loading...</div>}>
           <PaymentForm />
         </Suspense>
-      </Authenlize> */}
+      </Authorize>
       <TablePayments />
     </Page>
   )

@@ -78,6 +78,7 @@ const Resource = () => {
         </Authorize>
         <Col span={24}>
           <Table
+            rowKey="id"
             dataSource={resources}
             columns={columns}
             pagination={{

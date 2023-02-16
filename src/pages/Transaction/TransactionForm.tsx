@@ -1,9 +1,6 @@
-import styled from '@emotion/styled'
 import { ceil, keyBy, sumBy } from 'lodash'
 import { useMemo } from 'react'
-import Space from '../../components/commons/Space'
 import Text from '../../components/commons/Text'
-import { MultiSelectField, SelectField } from '../../components/fields'
 import { useGetTemplates } from '../../services/template/template-query'
 import { useCreateTransaction } from '../../services/transaction/transaction-query'
 import { CreateTransactionParams } from '../../services/transaction/transaction-types'
@@ -11,14 +8,6 @@ import { useGetUsers } from '../../services/user/user-query'
 import { numberWithCommas } from '../../utils/helper'
 import { Button, Col, Form, Modal, Row, Select, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-
-const FormLayout = styled.form`
-  margin: 20px;
-
-  > button {
-    margin-top: 20px;
-  }
-`
 
 interface CreateTransactionFormValues extends CreateTransactionParams {}
 
