@@ -154,7 +154,7 @@ const TransactionForm = () => {
             }}
           </Form.Item>
         </Col>
-        <Col span={6}>
+        <Col span={4}>
           <Button type="primary" htmlType="submit" block>
             Submit
           </Button>
