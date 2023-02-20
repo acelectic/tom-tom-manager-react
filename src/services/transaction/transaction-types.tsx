@@ -19,6 +19,7 @@ export interface TransactionEntity {
 }
 export interface GetTransactionsParams extends PaginationParams {
   userId?: string
+  isCompleted?: boolean
 }
 export interface GetTransactionsResponse
   extends Pagination<TransactionEntity> {}

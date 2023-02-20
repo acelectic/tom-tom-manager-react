@@ -11,6 +11,7 @@ import { Button, Col, Form, Modal, Radio, Row, Select } from 'antd'
 import { useGetTransactions } from '../../services/transaction/transaction-query'
 import { chain } from 'lodash'
 import InputNumber from '../../components/commons/InputNumber'
+import { pascalize } from 'humps'
 
 interface CreatePaymentFormValues extends CreatePaymentParams {}
 
@@ -24,6 +25,7 @@ const PaymentForm = () => {
   const { data: resources } = useGetResources()
   const { data: transactions } = useGetTransactions({
     userId,
+    isCompleted: false,
   })
 
   const users = useMemo(
@@ -63,12 +65,12 @@ const PaymentForm = () => {
     (): BaseOptions[] => [
       {
         value: PaymentType.BUY,
-        label: PaymentType.BUY,
-        disabled: true,
+        label: pascalize(PaymentType.BUY),
+        // disabled: true,
       },
       {
         value: PaymentType.PAID,
-        label: PaymentType.PAID,
+        label: pascalize(PaymentType.PAID),
         disabled: true,
       },
     ],

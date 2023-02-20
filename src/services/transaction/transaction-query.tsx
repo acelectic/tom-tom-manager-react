@@ -17,6 +17,8 @@ import {
   GetTransactionParams,
   GetTransactionResponse,
 } from './transaction-types'
+import { PAYMENT_URL } from '../payment/payment-query'
+import { USER_URL } from '../user/user-query'
 
 export const TRANSACTION_URL = 'transactions'
 export const TRANSACTION_HISTORY_URL = `${TRANSACTION_URL}/history`
@@ -93,28 +95,23 @@ export const useCreateTransaction = () => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries([PAYMENT_URL])
         queryClient.invalidateQueries([TRANSACTION_URL])
+        queryClient.invalidateQueries([TRANSACTION_HISTORY_URL])
+        queryClient.invalidateQueries([USER_URL])
       },
     },
   )
 }
 
 export const modifyTransaction = (transaction: TransactionEntity) => {
-  const {
-    ref,
-    users,
-    resources,
-    createdAt,
-    completed,
-    ...restTransaction
-  } = transaction
+  const { ref, users, resources, createdAt, completed, ...restTransaction } =
+    transaction
   return {
     ...restTransaction,
     ref: ref.toString().padStart(6, '0'),
     totalUser: users?.length || 0,
     completed: completed ? 'Completed' : 'Pending',
-    date: dayjs(createdAt)
-      .tz('Asia/Bangkok')
-      .format('DD/MM/YYYY hh:mm:ss'),
+    date: dayjs(createdAt).tz('Asia/Bangkok').format('DD/MM/YYYY hh:mm:ss'),
   }
 }

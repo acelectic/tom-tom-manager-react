@@ -1,6 +1,10 @@
 import styled from '@emotion/styled'
 import { Box } from '@material-ui/core'
-import { useCurrUser, useSignOut } from '../../services/auth/auth-query'
+import {
+  useCurrUser,
+  useCurrUserBalance,
+  useSignOut,
+} from '../../services/auth/auth-query'
 import { numberWithCommas } from '../../utils/helper'
 import Space from '../commons/Space'
 import { Button, Typography } from 'antd'
@@ -26,6 +30,7 @@ const Right = styled.div`
 
 const NavBar = () => {
   const { data: user } = useCurrUser()
+  const { data: userBalance } = useCurrUserBalance()
   const { mutate: signOut } = useSignOut()
   return (
     <Layout>
@@ -42,7 +47,7 @@ const NavBar = () => {
         <Space>
           <Typography color="inherit">{`${user?.name}`}</Typography>
           <Typography color="inherit">
-            {`( ${numberWithCommas(user?.balance || 0, 2)} )`}
+            {`( ${numberWithCommas(userBalance || 0, 2)} )`}
           </Typography>
           <Box>
             <Button

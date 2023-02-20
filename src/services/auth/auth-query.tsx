@@ -12,6 +12,7 @@ import {
 import {
   IForgotPasswordParams,
   IForgotPasswordResponse,
+  IGetCurrentUserBalanceResponse,
   ISignInParams,
   ISignInResponse,
   IUserEntity,
@@ -24,6 +25,7 @@ export const SIGN_OUT_URL = `${AUTH_URL}/sign-out`
 export const REFRESH_TOKEN_URL = `${AUTH_URL}/refresh-token`
 export const FORGOT_PASSWORD_URL = `${AUTH_URL}/forgot-password`
 export const CURRENT_USER = `${USER_URL}/current-user`
+export const CURRENT_USER_BALANCE = `${CURRENT_USER}/balance`
 
 export const useApiHealth = () => {
   const { snackbar } = useSnackbar()
@@ -51,7 +53,7 @@ export const useCurrUser = () => {
     },
     {
       staleTime: 10 * 60 * 1000,
-      cacheTime: 10 * 60 * 1000,
+      cacheTime: 60 * 1000,
       enabled: !!getAccessToken(),
       onError: () => {
         removeAccessToken()
@@ -79,6 +81,25 @@ export const useSignIn = () => {
         setRefreshToken(refreshToken)
         queryClient.setQueryData([USER_URL, CURRENT_USER], user)
       },
+    },
+  )
+}
+
+export const useCurrUserBalance = () => {
+  return useQuery(
+    [USER_URL, CURRENT_USER, CURRENT_USER_BALANCE],
+    async () => {
+      const response = await api.tomtom.get<IGetCurrentUserBalanceResponse>(
+        CURRENT_USER,
+      )
+      return response.data.balance
+    },
+    {
+      staleTime: Infinity,
+      cacheTime: 5 * 1000,
+      placeholderData: 0,
+      enabled: !!getAccessToken(),
+      retry: 0,
     },
   )
 }

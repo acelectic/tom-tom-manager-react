@@ -55,3 +55,7 @@ export interface IForgotPasswordParams {
 export interface IForgotPasswordResponse {
   newPassword: string
 }
+
+export interface IGetCurrentUserBalanceResponse {
+  balance: number
+}
