@@ -1,7 +1,6 @@
 import { useSignIn } from '../../../services/auth/auth-query'
 import { ISignInParams } from '../../../services/auth/auth-types'
 import styled from '@emotion/styled'
-import { appConfig } from '../../../config'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
 import { appVersion } from '../../../utils/helper'
 import { Link, useLocation } from 'react-router-dom'

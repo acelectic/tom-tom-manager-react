@@ -1,17 +1,11 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from 'axios'
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import dayjs from 'dayjs'
 import humps from 'humps'
 import { ApiErrorResponse, customRequestData, deepLoop } from './tools'
 import { appVersion, sleep } from '../helper'
 import { appConfig } from '../../config'
-import { REFRESH_TOKEN_URL, SIGN_IN_URL } from '../../services/auth/auth-query'
+import { REFRESH_TOKEN_URL } from '../../services/auth/auth-query'
 import {
-  getRefreshToken,
   removeAccessToken,
   removeCookies,
   removeRefreshToken,
@@ -20,10 +14,6 @@ import {
 } from '../../services/auth/auth-action'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import { IRefreshTokenResponse } from '../../services/auth/auth-types'
-
-interface IAxiosRequestConfig extends AxiosRequestConfig {
-  _retry: boolean
-}
 
 const requestInterceptor = (request: AxiosRequestConfig) => {
   request.headers.common['App-Version'] = appVersion
@@ -47,33 +37,6 @@ const responseInterceptor = (response: AxiosResponse<any>) => {
   }
   return response
 }
-
-const errorInterceptor =
-  (axRefreshToken: AxiosInstance) => async (error: AxiosError) => {
-    const originalConfig = error.config as IAxiosRequestConfig
-    const refreshToken = getRefreshToken()
-    if (
-      ![SIGN_IN_URL, REFRESH_TOKEN_URL].includes(originalConfig.url || '') &&
-      error.response
-    ) {
-      // Access Token was expired
-      if (
-        error.response.status === 401 &&
-        !originalConfig._retry &&
-        !!refreshToken
-      ) {
-        originalConfig._retry = true
-        // try {
-        //   await apiRefreshToken()
-        //   return axRefreshToken(originalConfig)
-        // } catch (_error) {
-        //   return Promise.reject(_error)
-        // }
-      }
-    }
-
-    return Promise.reject(error)
-  }
 
 // Function that will be called to refresh authorization
 const refreshAuthLogic = async (failedRequest: AxiosError) => {

@@ -76,58 +76,6 @@ const TransactionSummary = () => {
     return sortBy(data, ({ date }) => date)
   }, [endDate, startDate, transactionsGroupByDate])
   // const { data: transactionsHistory } = useGetTransactionsHistory()
-  const data = useMemo(() => {
-    const data = {
-      labels: transactionData
-        ? transactionData.map((d) => dayjs(d.date).format('DD/MM/YYYY'))
-        : [],
-      datasets: [
-        {
-          // ...dataSetOpts,
-          label: 'Price',
-          yAxisID: 'Price',
-          borderColor: colors[0],
-          pointBorderColor: colors[0],
-          pointHoverBackgroundColor: colors[0],
-          // pointHoverBorderColor: colors[1],
-          data: transactionData ? transactionData.map((d) => d.sumPrice) : [],
-        },
-        {
-          // ...dataSetOpts,
-          label: 'Remain',
-          yAxisID: 'Remain',
-          borderColor: colors[1],
-          pointBorderColor: colors[1],
-          pointHoverBackgroundColor: colors[1],
-          // pointHoverBorderColor: colors[1],
-          data: transactionData
-            ? transactionData.map((d) => d.sumRemainPrice)
-            : [],
-        },
-        {
-          // ...dataSetOpts,
-          label: 'Total User',
-          yAxisID: 'TotalUser',
-          borderColor: colors[2],
-          pointBorderColor: colors[2],
-          pointHoverBackgroundColor: colors[2],
-          // pointHoverBorderColor: colors[0],
-          data: transactionData ? transactionData.map((d) => d.sumUsers) : [],
-        },
-        {
-          // ...dataSetOpts,
-          label: 'Total Transaction',
-          yAxisID: 'TotalUser',
-          borderColor: colors[3],
-          pointBorderColor: colors[3],
-          pointHoverBackgroundColor: colors[3],
-          // pointHoverBorderColor: colors[0],
-          data: transactionData ? transactionData.map((d) => d.numTr) : [],
-        },
-      ],
-    }
-    return data
-  }, [transactionData])
 
   const statusOptions = useMemo((): BaseOptions[] => {
     return [

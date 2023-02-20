@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'
 import { flatten } from 'lodash'
-import { HTMLAttributes } from 'react'
 
 interface LayoutType {
   direction?: GridDirection

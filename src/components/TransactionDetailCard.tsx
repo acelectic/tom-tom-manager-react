@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper } from '@material-ui/core'
+import { Grid, Paper } from '@material-ui/core'
 import { capitalize, isNumber } from 'lodash'
 import Text from './commons/Text'
 import { numberWithCommas } from '../utils/helper'
@@ -59,7 +59,7 @@ const TransactionDetailCard = (props: TransactionDetailCardProps) => {
           </Grid>
         </Grid>
 
-        {resources?.map(resource => {
+        {resources?.map((resource) => {
           const { id, ref, name, price } = resource
           return (
             <Grid key={id} container direction="row" spacing={4}>
