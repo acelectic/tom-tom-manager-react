@@ -16,3 +16,5 @@ lerna-debug.log*
 .env*.local
 
 .firebase
+# Local Netlify folder
+.netlify
