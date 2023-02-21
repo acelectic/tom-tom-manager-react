@@ -1,3 +1,5 @@
+## [1.1.2](https://github.com/acelectic/tom-tom-manager-react/compare/v1.1.1...v1.1.2) (2023-02-21)
+
 ## [1.1.1](https://github.com/acelectic/tom-tom-manager-react/compare/v1.1.0...v1.1.1) (2023-02-21)
 
 # [1.1.0](https://github.com/acelectic/tom-tom-manager-react/compare/v1.0.3...v1.1.0) (2023-02-14)
