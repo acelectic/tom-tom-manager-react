@@ -1,14 +1,24 @@
 import { useApiHealth } from '../../services/auth/auth-query'
-import { Row, Col, Table, Typography, Alert, Progress } from 'antd'
+import { Row, Col, Table, Typography, Alert, Spin } from 'antd'
 import { pascalize } from 'humps'
 import { chain } from 'lodash'
 import { appVersion } from '../../utils/helper'
+import styled from '@emotion/styled'
+
+const SpinLayout = styled.div`
+  margin: 20px 0;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  text-align: center;
+  border-radius: 4px;
+`
 
 const Page505 = () => {
   const { isLoading: isHealthLoading, error: healthError } = useApiHealth({
     structuralSharing: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+    refetchOnMount: false,
   })
   return (
     <Col
@@ -31,7 +41,11 @@ const Page505 = () => {
       >
         {isHealthLoading ? (
           <Col>
-            <Progress type="circle" />
+            <SpinLayout>
+              <Spin tip="Loading">
+                <div className="content" />
+              </Spin>
+            </SpinLayout>
           </Col>
         ) : (
           <Col span={6}>

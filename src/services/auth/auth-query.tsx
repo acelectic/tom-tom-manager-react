@@ -17,6 +17,7 @@ import {
   ISignInResponse,
   IUserEntity,
 } from './auth-types'
+import { sleep } from '../../utils/helper'
 
 export const HEALTH_URL = 'health'
 export const AUTH_URL = 'auth'
@@ -32,7 +33,10 @@ export const useApiHealth = (options?: OmitReactQueryOptions<boolean>) => {
   return useQuery<boolean, IApiErrorResponse>(
     [HEALTH_URL],
     async () => {
-      const { data } = await api.tomtom.get<boolean>(HEALTH_URL)
+      const [{ data }] = await Promise.all([
+        api.tomtom.get<boolean>(HEALTH_URL),
+        sleep(2000),
+      ])
       return data
     },
     {

@@ -11,10 +11,18 @@ import './initialize'
 import { appVersion, withCtx } from './utils/helper'
 import { AppCtx } from './constant/contexts'
 import { AppSnackbar } from './components/AppSnackbar'
-import { ConfigProvider, notification } from 'antd'
+import { ConfigProvider, Spin, notification } from 'antd'
 import { ApiErrorResponse } from './utils/api/tools'
 import 'dayjs/locale/th'
 import locale from 'antd/locale/th_TH'
+import styled from '@emotion/styled'
+
+const SpinLayout = styled.div`
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 console.info(`APP VERSION: ${appVersion}`)
 const onError = (error: unknown) => {
@@ -64,7 +72,15 @@ const App = () => {
                 },
               }}
             >
-              <Suspense fallback={<div>...</div>}>
+              <Suspense
+                fallback={
+                  <SpinLayout>
+                    <Spin tip="Loading">
+                      <div className="content" />
+                    </Spin>
+                  </SpinLayout>
+                }
+              >
                 <Routes />
               </Suspense>
             </ConfigProvider>
