@@ -65,6 +65,7 @@
     "eject": "react-scripts eject",
     "fb:init": "firebase init hosting",
     "fb:deploy": "yarn build && firebase deploy --only hosting",
+    "netlify:deploy": "netlify deploy --prod --build --open",
     "semantic-release": "env-cmd -f .env semantic-release --no-ci"
   },
   "eslintConfig": {
