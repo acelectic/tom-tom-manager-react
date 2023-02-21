@@ -6,6 +6,7 @@ import loadable from '@loadable/component'
 import { Alert, Col, Modal, Row, Table, Typography } from 'antd'
 import { chain } from 'lodash'
 import { appVersion } from '../utils/helper'
+import { pascalize } from 'humps'
 
 const PageNotFound = loadable(() => import('../pages/404'))
 const SignIn = loadable(() => import('../pages/Auth/SignIn'))
@@ -52,7 +53,7 @@ export const Routes = () => {
                     (acc: { key: string; value: string | number }[], cur) => {
                       const [key, value] = cur
                       acc.push({
-                        key,
+                        key: pascalize(key),
                         value,
                       })
                       return acc
