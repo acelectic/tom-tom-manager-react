@@ -123,4 +123,13 @@ export const deepLoop = (data: any, func: (data: any) => any): any => {
   return func(data)
 }
 
-export class ApiErrorResponse extends Error {}
+export class ApiErrorResponse extends Error {
+  constructor(
+    message: string,
+    private errorCode: string,
+    private error: string,
+    private statusCode: number,
+  ) {
+    super(message)
+  }
+}

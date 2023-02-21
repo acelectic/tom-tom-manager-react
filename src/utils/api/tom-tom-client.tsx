@@ -109,7 +109,14 @@ export const tomtomApiWrapper = async (method: Promise<AxiosResponse>) => {
     .catch((e: AxiosError) => {
       const { response, message } = e
       const { data } = (response || {}) as { data: ITomTomErrorResponse }
-      const { errorCode, error } = data || {}
-      return Promise.reject(new ApiErrorResponse(errorCode || error || message))
+      const { errorCode, error, statusCode } = data || {}
+      return Promise.reject(
+        new ApiErrorResponse(
+          errorCode || error || message,
+          errorCode,
+          error,
+          statusCode,
+        ),
+      )
     })
 }

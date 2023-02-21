@@ -1,11 +1,11 @@
-import { useMutation } from 'react-query'
+import { useMutation } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import {
   IAdminChangePasswordParams,
   IAdminChangePasswordResponse,
   IAdminResetPasswordParams,
   IAdminResetPasswordResponse,
-} from './auth-types'
+} from './admin-types'
 
 const ADMIN_URL = 'admin'
 const ADMIN_RESET_PASSWORD_URL = `${ADMIN_URL}/reset-password`

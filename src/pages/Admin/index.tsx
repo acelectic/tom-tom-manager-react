@@ -13,7 +13,7 @@ import { usePageRunner } from '../../utils/custom-hook'
 import { ColumnType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 import paths from '../../constant/paths'
-import { useResetPassword } from '../../services/admin/auth-query'
+import { useResetPassword } from '../../services/admin/admin-query'
 import Authorize from '../../components/commons/Authorize'
 import ChangePasswordModal from './ChangePasswordModal'
 

@@ -1,10 +1,5 @@
 import dayjs from 'dayjs'
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import {
   CreateTransactionParams,
@@ -25,7 +20,7 @@ export const TRANSACTION_HISTORY_URL = `${TRANSACTION_URL}/history`
 
 export const useGetTransactions = (
   params?: GetTransactionsParams,
-  option?: UseQueryOptions<GetTransactionsResponse>,
+  option?: OmitReactQueryOptions<GetTransactionsResponse>,
 ) => {
   return useQuery(
     [TRANSACTION_URL, { params }],
@@ -45,7 +40,7 @@ export const useGetTransactions = (
 
 export const useGetTransaction = (
   params?: GetTransactionParams,
-  option?: UseQueryOptions<GetTransactionResponse>,
+  option?: OmitReactQueryOptions<GetTransactionResponse>,
 ) => {
   const { transactionId } = params || {}
   return useQuery(

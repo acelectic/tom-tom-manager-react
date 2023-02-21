@@ -1,8 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
 import './App.css'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Routes } from './routes'
-import { ReactQueryDevtools } from 'react-query-devtools'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import { Suspense } from 'react'

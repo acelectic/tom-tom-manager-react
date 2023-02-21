@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import { numberWithCommas } from '../../utils/helper'
 import {
@@ -18,11 +18,11 @@ export const useGetResources = (params?: GetResourcesParams) => {
       RESOURCE_URL,
       params,
     )
-    return (data.resources.map(({ ref, price, ...rest }) => ({
+    return data.resources.map(({ ref, price, ...rest }) => ({
       ...rest,
       price: numberWithCommas(price),
       ref: ref.toString().padStart(6, '0'),
-    })) as unknown) as GetResourcesResponse['resources']
+    })) as unknown as GetResourcesResponse['resources']
   })
 }
 export const useCreateResource = () => {

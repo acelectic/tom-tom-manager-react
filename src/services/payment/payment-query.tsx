@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import {
   TRANSACTION_HISTORY_URL,
@@ -27,7 +22,7 @@ export const CONFIRM_USER_PAYMENTS = `${PAYMENT_URL}/confirm-all`
 
 export const useGetPayments = (
   params?: GetPaymentsParams,
-  option?: UseQueryOptions<GetPaymentsResponse>,
+  option?: OmitReactQueryOptions<GetPaymentsResponse>,
 ) => {
   return useQuery(
     [PAYMENT_URL, { params }],

@@ -9,8 +9,8 @@ import {
 import { ChangePasswordCtx } from '../../constant/contexts'
 import { IUserEntity } from '../../services/auth/auth-types'
 import { Form, Input, Modal } from 'antd'
-import { IAdminChangePasswordParams } from '../../services/admin/auth-types'
-import { useChangePassword } from '../../services/admin/auth-query'
+import { IAdminChangePasswordParams } from '../../services/admin/admin-types'
+import { useChangePassword } from '../../services/admin/admin-query'
 
 type IUserInfo = Pick<IUserEntity, 'id' | 'name' | 'email'>
 type IChangePasswordModalFormValues = IAdminChangePasswordParams &

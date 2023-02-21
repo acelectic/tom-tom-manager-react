@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import { useSnackbar } from '../../utils/custom-hook'
 import { USER_URL } from '../user/user-query'
@@ -29,32 +29,46 @@ export const CURRENT_USER_BALANCE = `${CURRENT_USER}/balance`
 
 export const useApiHealth = () => {
   const { snackbar } = useSnackbar()
-  return useQuery([HEALTH_URL], () => api.tomtom.get(HEALTH_URL), {
-    onSuccess: () => {
-      console.log(' Server is running '.padStart(10, '-').padEnd(10, '-'))
+  return useQuery<boolean, IApiErrorResponse>(
+    [HEALTH_URL],
+    async () => {
+      const { data } = await api.tomtom.get<boolean>(HEALTH_URL)
+      return data
     },
-    onError: () => {
-      snackbar({
-        message: 'Server Connection fail',
-      })
+    {
+      onSuccess: () => {
+        console.log(' Server is running '.padStart(10, '-').padEnd(10, '-'))
+      },
+      onError: (error) => {
+        console.log({ error })
+        if (error.statusCode === 505) {
+          // snackbar({
+          //   message: error.message,
+          // })
+        } else {
+          snackbar({
+            message: 'Server Connection fail',
+          })
+        }
+      },
+      retry: 0,
+      cacheTime: 10 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
     },
-    retry: 2,
-    cacheTime: 10 * 60 * 1000,
-    staleTime: 10 * 60 * 1000,
-  })
+  )
 }
 
 export const useCurrUser = () => {
   return useQuery(
     [USER_URL, CURRENT_USER],
     async () => {
+      if (!getAccessToken()) return
       const response = await api.tomtom.get<IUserEntity>(CURRENT_USER)
       return response.data
     },
     {
       staleTime: 10 * 60 * 1000,
       cacheTime: 60 * 1000,
-      enabled: !!getAccessToken(),
       onError: () => {
         removeAccessToken()
         removeRefreshToken()

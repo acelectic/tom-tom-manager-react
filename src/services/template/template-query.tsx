@@ -1,5 +1,5 @@
 import { sumBy } from 'lodash'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../utils/api'
 import {
   CreateTemplateParams,
@@ -20,12 +20,10 @@ export const useGetTemplates = (params?: GetTemplateParams) => {
       TEMPLATE_URL,
       params,
     )
-    return data.templates.map(d => ({
+    return data.templates.map((d) => ({
       ...d,
-      isActiveLabel: ((d.isActive
-        ? 'Active'
-        : 'Inactive') as unknown) as boolean,
-      cost: sumBy(d.resources, v => Number(v.price)),
+      isActiveLabel: (d.isActive ? 'Active' : 'Inactive') as unknown as boolean,
+      cost: sumBy(d.resources, (v) => Number(v.price)),
     }))
   })
 }
