@@ -5,6 +5,7 @@ import paths from '../constant/paths'
 import loadable from '@loadable/component'
 import { Alert, Col, Modal, Row, Table, Typography } from 'antd'
 import { chain } from 'lodash'
+import { appVersion } from '../utils/helper'
 
 const PageNotFound = loadable(() => import('../pages/404'))
 const SignIn = loadable(() => import('../pages/Auth/SignIn'))
@@ -46,6 +47,7 @@ export const Routes = () => {
               <Table
                 dataSource={chain(healthError)
                   .entries()
+                  .unshift(['App Version', appVersion])
                   .transform(
                     (acc: { key: string; value: string | number }[], cur) => {
                       const [key, value] = cur
