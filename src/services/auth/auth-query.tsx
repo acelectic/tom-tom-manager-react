@@ -35,21 +35,13 @@ export const useApiHealth = (options?: OmitReactQueryOptions<boolean>) => {
     async () => {
       const [{ data }] = await Promise.all([
         api.tomtom.get<boolean>(HEALTH_URL),
-        sleep(2000),
+        sleep(250),
       ])
       return data
     },
     {
-      onSuccess: () => {
-        console.log(' Server is running '.padStart(10, '-').padEnd(10, '-'))
-      },
       onError: (error) => {
-        console.log({ error })
-        if (error.statusCode === 505) {
-          // snackbar({
-          //   message: error.message,
-          // })
-        } else {
+        if (error.statusCode !== 505) {
           snackbar({
             message: 'Server Connection fail',
           })
