@@ -34,6 +34,7 @@ export const generate =
   }
 
 const notFound = generate('/404')
+const clientVersionNotAllowed = generate('/505')
 const signIn = generate('/sign-in')
 const forgotPassword = generate('/forgot-password')
 const dashboard = generate('/dashboard')
@@ -52,6 +53,7 @@ const settingTemplate = generate('/setting-template')
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   notFound,
+  clientVersionNotAllowed,
   signIn,
   forgotPassword,
   dashboard,

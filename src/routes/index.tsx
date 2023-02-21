@@ -9,6 +9,7 @@ import { appVersion } from '../utils/helper'
 import { pascalize } from 'humps'
 
 const PageNotFound = loadable(() => import('../pages/404'))
+const Page505 = loadable(() => import('../pages/505'))
 const SignIn = loadable(() => import('../pages/Auth/SignIn'))
 const ForgotPassword = loadable(() => import('../pages/Auth/ForgotPassword'))
 const ProtectedRoute = loadable(() => import('./protected'))
@@ -33,72 +34,6 @@ export const Routes = () => {
       healthError?.statusCode === 505
     ) {
       setIsShowHealthError(true)
-      Modal.error({
-        title: 'Server Connection Reject',
-        closable: false,
-        width: 500,
-        okButtonProps: {
-          style: {
-            display: 'none',
-          },
-        },
-        content: (
-          <Row gutter={[6, 6]}>
-            <Col span={24}>
-              <Table
-                dataSource={chain(healthError)
-                  .entries()
-                  .unshift(['App Version', appVersion])
-                  .transform(
-                    (acc: { key: string; value: string | number }[], cur) => {
-                      const [key, value] = cur
-                      acc.push({
-                        key: pascalize(key),
-                        value,
-                      })
-                      return acc
-                    },
-                    [],
-                  )
-                  .value()}
-                columns={[
-                  {
-                    dataIndex: 'key',
-                    width: 'max-content',
-                  },
-                  {
-                    dataIndex: 'value',
-                    width: '100%',
-                    render(value) {
-                      return (
-                        <Typography.Paragraph
-                          style={{
-                            marginBottom: 0,
-                          }}
-                        >
-                          {value}
-                        </Typography.Paragraph>
-                      )
-                    },
-                  },
-                ]}
-                bordered={false}
-                pagination={false}
-                indentSize={6}
-                size="small"
-              />
-            </Col>
-            <Col span={24}>
-              <Alert
-                type="warning"
-                message=" Please refresh page and try again"
-                banner
-                showIcon
-              />
-            </Col>
-          </Row>
-        ),
-      })
     }
   }, [healthError, isHealthLoading, isShowHealthError])
 
@@ -107,6 +42,7 @@ export const Routes = () => {
   ) : (
     <Switch>
       <Route path={paths.forgotPassword()} component={ForgotPassword} />
+
       {!isAuthorized ? (
         <Route path={paths.signIn()} component={SignIn} />
       ) : (
@@ -114,7 +50,12 @@ export const Routes = () => {
       )}
 
       <Route path={paths.notFound()} component={PageNotFound} />
-
+      <Route path={paths.clientVersionNotAllowed()} component={Page505} />
+      {isShowHealthError ? (
+        <Redirect to={paths.clientVersionNotAllowed()} />
+      ) : (
+        <></>
+      )}
       {!isAuthorized ? <Redirect to={paths.signIn()} /> : <ProtectedRoute />}
 
       <Redirect to={paths.notFound()} />

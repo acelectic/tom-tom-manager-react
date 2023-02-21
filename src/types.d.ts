@@ -26,6 +26,11 @@ type OmitReactQueryOptions<
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 > = Omit<
-  UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+  import('@tanstack/react-query').UseQueryOptions<
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryKey
+  >,
   'queryKey' | 'queryFn' | 'initialData'
 >

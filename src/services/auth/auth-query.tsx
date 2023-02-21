@@ -27,7 +27,7 @@ export const FORGOT_PASSWORD_URL = `${AUTH_URL}/forgot-password`
 export const CURRENT_USER = `${USER_URL}/current-user`
 export const CURRENT_USER_BALANCE = `${CURRENT_USER}/balance`
 
-export const useApiHealth = () => {
+export const useApiHealth = (options?: OmitReactQueryOptions<boolean>) => {
   const { snackbar } = useSnackbar()
   return useQuery<boolean, IApiErrorResponse>(
     [HEALTH_URL],
@@ -54,6 +54,7 @@ export const useApiHealth = () => {
       retry: 0,
       cacheTime: 10 * 60 * 1000,
       staleTime: 10 * 60 * 1000,
+      ...options,
     },
   )
 }
