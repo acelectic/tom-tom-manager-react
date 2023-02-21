@@ -3,10 +3,6 @@ import { useApiHealth, useCurrUser } from '../services/auth/auth-query'
 import { useEffect, useMemo, useState } from 'react'
 import paths from '../constant/paths'
 import loadable from '@loadable/component'
-import { Alert, Col, Modal, Row, Table, Typography } from 'antd'
-import { chain } from 'lodash'
-import { appVersion } from '../utils/helper'
-import { pascalize } from 'humps'
 
 const PageNotFound = loadable(() => import('../pages/404'))
 const Page505 = loadable(() => import('../pages/505'))
@@ -53,9 +49,7 @@ export const Routes = () => {
       <Route path={paths.clientVersionNotAllowed()} component={Page505} />
       {isShowHealthError ? (
         <Redirect to={paths.clientVersionNotAllowed()} />
-      ) : (
-        <></>
-      )}
+      ) : null}
       {!isAuthorized ? <Redirect to={paths.signIn()} /> : <ProtectedRoute />}
 
       <Redirect to={paths.notFound()} />
