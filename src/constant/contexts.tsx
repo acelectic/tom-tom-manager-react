@@ -1,5 +1,5 @@
 import { AppSnackbarProps } from '../components/AppSnackbar'
-import { ITemplateFormValues } from '../pages/Setting/TemplateFormModal'
+import { ITemplateFormValues } from '../pages/SettingTemplate/TemplateFormModal'
 import { EnumRole } from '../services/auth/auth-types'
 import { createCtx } from '../utils/helper'
 

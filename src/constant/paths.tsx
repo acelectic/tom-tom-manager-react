@@ -47,7 +47,7 @@ const transactionDetail = generate<{ transactionId: string }>(
 const payments = generate('/payments')
 
 const admin = generate('/admin')
-const setting = generate('/setting')
+const settingTemplate = generate('/setting-template')
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -62,5 +62,5 @@ export default {
   transactionDetail,
   payments,
   admin,
-  setting,
+  settingTemplate,
 }

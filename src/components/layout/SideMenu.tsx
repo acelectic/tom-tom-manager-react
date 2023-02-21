@@ -89,8 +89,8 @@ const SideMenu = () => {
       />
       <Authorize roles={[EnumRole.ADMIN, EnumRole.MANAGER]} allowLocalAdmin>
         <Menu
-          path={paths.setting()}
-          label={t('page.setting')}
+          path={paths.settingTemplate()}
+          label={t('page.settingTemplate')}
           icon={<SettingsIcon />}
         />
       </Authorize>

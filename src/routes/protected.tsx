@@ -8,7 +8,7 @@ const Admin = loadable(() => import('../pages/Admin'))
 const Dashboard = loadable(() => import('../pages/Dashboard'))
 const Payment = loadable(() => import('../pages/Payment'))
 const Resource = loadable(() => import('../pages/Resource'))
-const Setting = loadable(() => import('../pages/Setting'))
+const SettingTemplate = loadable(() => import('../pages/SettingTemplate'))
 const Transaction = loadable(() => import('../pages/Transaction'))
 const Users = loadable(() => import('../pages/User'))
 const TransactionDetail = loadable(
@@ -32,7 +32,7 @@ export const ProtectedRoute = () => {
         <Route path={paths.transactions()} component={Transaction} />
 
         <Route path={paths.payments()} component={Payment} />
-        <Route path={paths.setting()} component={Setting} />
+        <Route path={paths.settingTemplate()} component={SettingTemplate} />
         <Authorize allowLocalAdmin>
           <Route path={paths.admin()} component={Admin} />
         </Authorize>
