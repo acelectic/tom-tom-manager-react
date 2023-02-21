@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import paths from '../constant/paths'
 import loadable from '@loadable/component'
 import { Alert, Col, Modal, Row, Table, Typography } from 'antd'
-import { chain, transform } from 'lodash'
+import { chain } from 'lodash'
 
 const PageNotFound = loadable(() => import('../pages/404'))
 const SignIn = loadable(() => import('../pages/Auth/SignIn'))
